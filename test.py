@@ -6,6 +6,6 @@ if age < 18:
 else:
     print("You are an adult.")
 print("Thank you for using the program.")
-print("Goodbye!")
+print("Goodbye!,chinchin.py")
 
     
