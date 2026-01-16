@@ -5,6 +5,8 @@ if name == "osuke":
     print("you have a chinchin.")
 elif name == "takuma":
     print("you have two chinchins.")
+else:
+    print("Ohchinchin")
 
 print(f"Hello, {name}! Let's play a game.")
 age = int(input("How old are you? "))
