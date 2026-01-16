@@ -2,9 +2,11 @@ input ("Press Enter to continue...")
 print ("Welcome to Chinchin.py!")
 name = input("What is your name? ")
 if name == "osuke":
-    print("you are chinchin.")
+    print("you have a chinchin.")
+elif name == "takuma":
+    print("you have two chinchins.")
 
 print(f"Hello, {name}! Let's play a game.")
 age = int(input("How old are you? "))
-if age < 18:
-    print("You are a chinchin.")
+if age > 21:
+    print("You don't have a chinchin.")
