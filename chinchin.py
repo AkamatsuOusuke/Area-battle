@@ -10,5 +10,5 @@ else:
 
 print(f"Hello, {name}! Let's play a game.")
 age = int(input("How old are you? "))
-if age > 21:
+if age >= 21:
     print("You don't have a chinchin.")
