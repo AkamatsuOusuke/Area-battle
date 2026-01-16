@@ -6,9 +6,7 @@ if age < 18:
 else:
     print("You are an adult.")
 print("Thank you for using the program.")
-print("Next chincgin is you.")
+print("Next chinchin is you.")
 print("Goodbye!")
 print("Fuck you!")
-
-
-    
+pirnt("you're welcome!")    
