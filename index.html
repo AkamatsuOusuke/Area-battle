@@ -123,6 +123,13 @@ let map = L.map('map',{
     keyboard:true // キーボード操作有効
 }).setView([33.59,130.40],13);
 
+const playerIcon = L.icon({
+    iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png", // 仮アイコン
+    iconSize: [40, 40],
+    iconAnchor: [20, 20]
+});
+
+
 // サイズ再計算（スマホ画面表示崩れ防止）
 window.addEventListener("resize",()=>{
     map.invalidateSize();
@@ -280,8 +287,15 @@ function startGPS(){
         if(marker){
             marker.setLatLng([lat, lng]);
         }else{
-            marker = L.marker([lat, lng]).addTo(map);
+            marker = L.marker([lat, lng],{icon: playerIcon}).addTo(map);
         }
+
+        L.circle([lat, lng],{
+            radius:5,
+            color:"#00fff7",
+            fillcolor:"#00fff7",
+            fillOpacity:0.7
+        }).addTo(map);
 
         // 地図中心を現在地に移動（初回のみ）
         if(firstMove){
@@ -305,7 +319,6 @@ async function loadRanking(){
 
     let text= "";
     let rank = 1;
-    let crown = "";
 
     for(let r of data){
         if(rank == 1){
@@ -316,6 +329,9 @@ async function loadRanking(){
         }
         else if(rank == 3){
             crown = "🥉";
+        }
+        else{
+            crown ="";
         }
 
         text += crown + rank + "位 " + r.username + " : " + r.area + "<br>";
