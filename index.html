@@ -95,10 +95,10 @@
 
 <body>
 
-<div class="header">エリアバトル</div>
+<div class="header">Area Battle</div>
 <div class="container">
     <div id="map" style="height:500px;"></div>
-    <input id = "username" type="text" placeholder="名前を入力"/>
+    <input id = "username" type="text" placeholder="ニックネーム"/>
     <button onclick="startGPS()">GPS取得開始</button>    
     <button onclick="sendArea()">面積計算</button>
     <button onclick="resetMap()">地図リセット</button>
@@ -305,8 +305,22 @@ async function loadRanking(){
     let data = await res.json();
 
     let text= "";
+    let rank = 1;
+    let crown = "";
+
     for(let r of data){
-        text += r.username + " : " + r.area + "<br>";
+        if(rank == 1){
+            crown = "🥇";
+        }
+        else if(rank == 2){
+            crown = "🥈";
+        }
+        else if(rank == 3){
+            crown = "🥉";
+        }
+
+        text += crown + rank + "位 " + r.username + " : " + r.area + "<br>";
+        rank++;
     }
     document.getElementById("ranking").innerHTML = text;
 }
