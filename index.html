@@ -11,8 +11,9 @@
     /* 全体設定 */
     body{
         margin:0;
-        font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-        background:#eef1f5;
+        font-family:"Noto Sans JP",sans-serif;
+        background:#0f172a;
+        color:white;
     }
 
     /* ヘッダー */
@@ -20,23 +21,23 @@
         position:fixed;
         top:0;
         width:100%;
-        background:white;
+        background:#020617;
         text-align:center;
-        padding:14px;
-        font-weight:bold;
-        font-size:18px;
-        box-shadow:0 2px 8px rgba(0,0,0,0.1);
+        padding:16px;
+        font-size:20px;
         z-index:1000;
 
         font-family:"Orbitron", sans-serif;
         letter-spacing:2px;
-        color:#007aff;
-        text-shadow:0 0 6px rgba(0,122,255,0.6);
+        color:#38bdf8;
+        text-shadow:0 0 8px rgba(56,189,248,0.7);
+        box-shadow:0 0 12px rgba(56,189,248,0.3);
+       
     }
 
     /* コンテナ */
     .container{
-        padding:70px 12px 20px;
+        padding:80px 14px 20px;
         max-width:500px;
         margin:auto;
    }
@@ -44,10 +45,10 @@
     /* 地図 */
     #map{
         height:55vh;
-        border-radius:14px;
+        border-radius:16px;
         overflow:hidden;
-        box-shadow:0 4px 12px rgba(0,0,0,0.12);
-        margin-bottom:12px;
+        box-shadow:0 0 15px rgba(56,189,248,0.25);
+        margin-bottom:14px;
     }
 
     /* ボタン */
@@ -56,44 +57,53 @@
         padding:14px;
         font-size:16px;
         border:none;    
-        border-radius:12px;
-        background:#007aff;
+        border-radius:14px;
+        background:linear-gradient(90deg,#0ea5e9,#22d3ee);
         color:white;
         font-weight:bold;
+        font-family:"Orbitron", sans-serif;
+        letter-spacing:1px;
         margin-bottom:10px;
+        box-shadow:0 0 10px rgba(34,211,238,0.4);
+        transition:0.15s;
     }
 
     button:active{
         transform:scale(0.96);
+        box-shadow:0 0 18px rgba(34,211,238,0.8);
     }
 
     /* 入力 */
     input{
         width:100%;
-        padding:12px;
-        border-radius:10px;
-        border:none;
+        padding:14px;
+        border-radius:12px;
+        border:1px solid rgba(56,189,248,0.3);
         margin-bottom:12px;
         font-size:15px;
+        background:#020617;
+        color:white;
     }
 
     /* カード */
     .card{
-        background:white;
-        padding:12px;
-        border-radius:14px;
-        margin-bottom:12px;
-        box-shadow:0 2px 8px rgba(0,0,0,0.08);
+        background:#020617;
+        padding:14px;
+        border-radius:16px;
+        margin-bottom:14px;
+        box-shadow:0 0 12px rgba(56,189,248,0.15);
     }
 
     /* ランキング */
     .rank-item{
         display:flex;
         justify-content:space-between;
-        padding:10px;
-        background:#f4f6f9;
-        border-radius:10px;
-        margin-bottom:6px;
+        padding:12px;
+        background:#020617;
+        border-radius:12px;
+        margin-bottom:8px;
+        border:1px solid rgba(56,189,248,0.2);
+        font-family:"Orbitron", sans-serif;
     }
 
 </style>
