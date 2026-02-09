@@ -7,33 +7,111 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <style>
-    html,body{
+    /* 全体設定 */
+    body{
         margin:0;
-        height:100%;
-        font-family:sans-serif;
+        font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+        background:#eef1f5;
     }
+
+    /* ヘッダー */
+    .header{
+        position:fixed;
+        top:0;
+        width:100%;
+        background:white;
+        text-align:center;
+        padding:14px;
+        font-weight:bold;
+        font-size:18px;
+        box-shadow:0 2px 8px rgba(0,0,0,0.1);
+        z-index:1000;
+    }
+
+    /* コンテナ */
+    .container{
+        padding:70px 12px 20px;
+        max-width:500px;
+        margin:auto;
+   }
+
+    /* 地図 */
     #map{
-        height:70vh;
+        height:55vh;
+        border-radius:14px;
+        overflow:hidden;
+        box-shadow:0 4px 12px rgba(0,0,0,0.12);
+        margin-bottom:12px;
     }
+
+    /* ボタン */
     button{
+       width:100%;
+        padding:14px;
         font-size:16px;
-        margin:5px;
+        border:none;    
+        border-radius:12px;
+        background:#007aff;
+        color:white;
+        font-weight:bold;
+        margin-bottom:10px;
+    }
+
+    button:active{
+        transform:scale(0.96);
+    }
+
+    /* 入力 */
+    input{
+        width:100%;
         padding:12px;
+        border-radius:10px;
+        border:none;
+        margin-bottom:12px;
+        font-size:15px;
     }
-    #controls{
+
+    /* カード */
+    .card{
+        background:white;
+        padding:12px;
+        border-radius:14px;
+        margin-bottom:12px;
+        box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    /* ランキング */
+    .rank-item{
+        display:flex;
+        justify-content:space-between;
         padding:10px;
+        background:#f4f6f9;
+        border-radius:10px;
+        margin-bottom:6px;
     }
+
 </style>
 </head>
 
 <body>
 
-<div id="map" style="height:500px;"></div>
-<button onclick="startGPS()">GPS取得開始</button>    
-<button onclick="sendArea()">面積計算</button>
-<button onclick="resetMap()">地図リセット</button>
-<input id = "username" type="text" placeholder="名前を入力"/>
-<p id="result"></p>
+<div class="header">エリアバトル</div>
+<div class="container">
+    <div id="map" style="height:500px;"></div>
+    <input id = "username" type="text" placeholder="名前を入力"/>
+    <button onclick="startGPS()">GPS取得開始</button>    
+    <button onclick="sendArea()">面積計算</button>
+    <button onclick="resetMap()">地図リセット</button>
+
+    <div id="result" class="card"></div>
+
+    <div class="card">
+        <h3>ランキング </h3>
+        <div id="ranking"></div>
+    </div>
+</div>
+
+
 
 <script>
 // 地図を作る。福岡あたりを表示
@@ -218,6 +296,17 @@ function startGPS(){
         maximumAge:0, // 毎回新しい情報を取得
         timeout:10000 // タイムアウト10秒
     });
+}
+
+async function loadRanking(){
+    let res = await fetch("https://area-battle.onrender.com/ranking");
+    let data = await res.json();
+
+    let text= "";
+    for(let r of data){
+        text += r.name + " : " + r.area + "<br>";
+    }
+    document.getElementById("ranking").innerHTML = text;
 }
 
 </script>
