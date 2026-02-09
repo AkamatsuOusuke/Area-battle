@@ -8,103 +8,83 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <style>
-    /* 全体設定 */
     body{
         margin:0;
-        font-family:"Noto Sans JP",sans-serif;
-        background:#0f172a;
+        font-family:"Orbitron",sans-serif;
+        background:#020617;
         color:white;
     }
 
-    /* ヘッダー */
-    .header{
-        position:fixed;
-        top:0;
-        width:100%;
+    /* ===== HUD ===== */
+    .hud{
         background:#020617;
+        padding:14px;
+        border-radius:16px;
+        margin-bottom:12px;
+        box-shadow:0 0 15px rgba(0,200,255,0.3);
         text-align:center;
-        padding:16px;
-        font-size:20px;
-        z-index:1000;
-
-        font-family:"Orbitron", sans-serif;
-        letter-spacing:2px;
-        color:#38bdf8;
-        text-shadow:0 0 8px rgba(56,189,248,0.7);
-        box-shadow:0 0 12px rgba(56,189,248,0.3);
-       
     }
 
-    /* コンテナ */
-    .container{
-        padding:80px 14px 20px;
-        max-width:500px;
-        margin:auto;
-   }
+    #result{
+        font-size:20px;
+        color:#22d3ee;
+        margin-bottom:10px;
+    }
 
-    /* 地図 */
+    /* ===== 地図 ===== */
     #map{
         height:55vh;
         border-radius:16px;
         overflow:hidden;
-        box-shadow:0 0 15px rgba(56,189,248,0.25);
+        box-shadow:0 0 20px rgba(0,200,255,0.25);
         margin-bottom:14px;
     }
 
-    /* ボタン */
+    /* ===== 操作ボタン ===== */
+    .action-buttons{
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+    }
+
     button{
-       width:100%;
-        padding:14px;
-        font-size:16px;
-        border:none;    
+        padding:16px;
+        font-size:15px;
+        border:none;
         border-radius:14px;
         background:linear-gradient(90deg,#0ea5e9,#22d3ee);
         color:white;
         font-weight:bold;
-        font-family:"Orbitron", sans-serif;
         letter-spacing:1px;
-        margin-bottom:10px;
-        box-shadow:0 0 10px rgba(34,211,238,0.4);
-        transition:0.15s;
+        box-shadow:0 0 12px rgba(34,211,238,0.4);
     }
 
     button:active{
-        transform:scale(0.96);
-        box-shadow:0 0 18px rgba(34,211,238,0.8);
+        transform:scale(0.94);
     }
 
-    /* 入力 */
-    input{
-        width:100%;
-        padding:14px;
-        border-radius:12px;
-        border:1px solid rgba(56,189,248,0.3);
-        margin-bottom:12px;
-        font-size:15px;
+    /* ===== スコアボード ===== */
+    .ranking-board{
         background:#020617;
-        color:white;
-    }
-
-    /* カード */
-    .card{
-        background:#020617;
-        padding:14px;
         border-radius:16px;
-        margin-bottom:14px;
-        box-shadow:0 0 12px rgba(56,189,248,0.15);
+        padding:14px;
+        box-shadow:0 0 12px rgba(0,200,255,0.2);
     }
 
-    /* ランキング */
     .rank-item{
         display:flex;
         justify-content:space-between;
         padding:12px;
-        background:#020617;
-        border-radius:12px;
         margin-bottom:8px;
-        border:1px solid rgba(56,189,248,0.2);
-        font-family:"Orbitron", sans-serif;
+        border-radius:10px;
+        border:1px solid rgba(0,200,255,0.3);
     }
+
+    .rank-item:first-child{
+        border:1px solid gold;
+        box-shadow:0 0 12px gold;
+    }
+
 
 </style>
 </head>
@@ -113,16 +93,19 @@
 
 <div class="header">Area Battle</div>
 <div class="container">
+    <div class="hud"> <!--hud:ゲームの上部情報欄-->
+        <div id="result">面積: --</div>
+        <input id="username" type="text" placeholder="PLAYER NAME"/>
+    </div>
     <div id="map" style="height:500px;"></div>
-    <input id = "username" type="text" placeholder="ニックネーム"/>
-    <button onclick="startGPS()">GPS取得開始</button>    
-    <button onclick="sendArea()">面積計算</button>
-    <button onclick="resetMap()">地図リセット</button>
+    <div class=""action-buttons">
+        <button onclick="startGPS()">GPS取得開始</button>    
+        <button onclick="sendArea()">面積計算</button>
+        <button onclick="resetMap()">地図リセット</button>
+    </div>
 
-    <div id="result" class="card"></div>
-
-    <div class="card">
-        <h3>ランキング </h3>
+    <div class="card ranking-board">
+        <h3>🏆 SCORE BOARD</h3>
         <div id="ranking"></div>
     </div>
 </div>
