@@ -1,5 +1,8 @@
 #　FastAPI：高速なAPIサーバーを簡単に作成できるフレームワーク
-from fastapi import FastAPI 
+from fastapi import FastAPI
+
+# ファイルレスポンスを返すためのクラス
+from fastapi.responses import FileResponse  
 
 # CORS（Cross-Origin Resource Sharing）を制御するためのミドルウェア。どこからでもアクセスOKにしてくれてるらしい
 from fastapi.middleware.cors import CORSMiddleware 
@@ -11,6 +14,10 @@ from shapely.geometry import Polygon
 from pyproj import Transformer
 
 app = FastAPI() # サーバー本体を、appという名前で作成
+
+@app.get("/") # ルートパス（/）にGETリクエストが来たら、以下の関数を実行
+async def root():
+    return FileResponse("index.html") # index.htmlファイルを返す
 
 app.add_middleware(
     CORSMiddleware,
