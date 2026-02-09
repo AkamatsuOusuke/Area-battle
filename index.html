@@ -93,7 +93,7 @@ async function sendArea(){
     }
     
     //　fetchで、サーバーにPOSTリクエストを送る
-    let res = await fetch("http://127.0.0.1:8000/area",{
+    let res = await fetch("https://area-battle.onrender.com/area",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({coords:sendPoints}) // 座標データ送信(JS → JSON → Python)
