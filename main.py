@@ -13,6 +13,12 @@ from shapely.geometry import Polygon
 # 座標変換ライブラリ
 from pyproj import Transformer
 
+# データベース操作用ライブラリ
+import sqlite3
+
+# 日付操作用ライブラリ
+import datetime
+
 app = FastAPI() # サーバー本体を、appという名前で作成
 
 @app.get("/") # ルートパス（/）にGETリクエストが来たら、以下の関数を実行
@@ -26,18 +32,60 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 座標変換器の作成（緯度経度→平面直角座標系）
 transformer = Transformer.from_crs(
     "EPSG:4326",  # WGS84（緯度経度）
     "EPSG:3857",  # Webメルカトル（平面直角座標系）
     always_xy=True,
 )
 
+# DB初期化
+conn = sqlite3.connect("area_battle.db", check_same_thread=False) # SQLiteに接続（ファイルがなければ自動作成）
+cursor = conn.cursor() # カーソルを作成
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS areas(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT,
+    area REAL,
+    created_at TEXT)""") # id, username, area, created_atカラムを持つareasテーブルを作成
+conn.commit() # 変更を保存
+
+
 @app.post("/area") # /areaにPOSTリクエストが来たら、以下の関数を実行
 async def calc_area(data: dict): # ブラウザから送られてきたjsonデータをdataとして受け取る
     coords = data["coords"]
+    name = data.get("name", "匿名さん")
 
     polygon = Polygon(coords) # 受け取った座標データを多角形の図形に変換
 
     area = polygon.area # 多角形の面積を計算(.areaで求めれるらしい)
 
+    now = datetime.datetime.now().isoformat() # 現在日時をISO形式で取得
+
+    cursor.execute(
+        "INSERT INTO areas (username, area, created_at) VALUES (?, ?, ?)", 
+        (name, area, now)
+        ) #areasテーブルに、username, area, created_atデータを挿入
+    conn.commit()
+
     return {"area": area} # areaという名前で、計算結果をjson形式で返す
+
+# ランキング取得
+@app.get("/rankings") # /rankingsにGETリクエストが来たら、以下の関数を実行
+async def ranking():
+
+    cursor.execute("""
+        SELECT username, area
+        FROM areas
+        ORDER BY area DESC
+        LIMIT 10""") # areasテーブルからusernameとareaを取得し、areaを降順に並べて上位10件を取得
+    
+    rows = cursor.fetchall() # 取得した行をすべて取得
+
+    result =[]
+    for r in rows: 
+        result.append({ # 辞書型でデータを格納
+            "username":r[0], 
+            "area":r[1]
+        })
+    return result
