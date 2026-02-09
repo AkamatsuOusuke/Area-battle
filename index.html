@@ -2,9 +2,28 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>面積ゲーム試作</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- スマホ対応 -->
+<title>エリアバトル</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<style>
+    html,body{
+        margin:0;
+        height:100%;
+        font-family:sans-serif;
+    }
+    #map{
+        height:70vh;
+    }
+    button{
+        font-size:16px;
+        margin:5px;
+        padding:12px;
+    }
+    #controls{
+        padding:10px;
+    }
+</style>
 </head>
 
 <body>
@@ -17,7 +36,22 @@
 
 <script>
 // 地図を作る。福岡あたりを表示
-let map = L.map('map').setView([33.59,130.40],13);
+let map = L.map('map',{
+    dragging:true, // ドラッグ移動有効
+    touchZoom:true,  // ピンチズーム有効
+    scrollWheelZoom:true, // マウスホイールズーム有効
+    doubleClickZoom:true, // ダブルクリックズーム有効
+    boxZoom:true, // ドラッグでズーム範囲指定有効
+    keyboard:true // キーボード操作有効
+}).setView([33.59,130.40],13);
+
+// サイズ再計算（スマホ画面表示崩れ防止）
+window.addEventListener("realize",()=>{
+    map.invalidateSize();
+})
+
+// 最初の1回だけ地図中心を現在地に移動する用
+let firstMove = true;
 
 // 無料地図を組み込む
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
@@ -47,11 +81,22 @@ async function sendArea(){
         return;
     }
 
+    // 最初の点を最後に追加して、多角形を閉じる
+    let sendPoints = [...points];
+
+    let first = sendPoints[0];
+    let last = sendPoints[sendPoints.length-1];
+
+    // 最初と最後の点が同じでなければ、最初の点を追加(緯度・軽度の両方を比較)
+    if(first[0] !== last[0] || first[1] !== last[1]){
+        sendPoints.push(first);
+    }
+    
     //　fetchで、サーバーにPOSTリクエストを送る
     let res = await fetch("http://127.0.0.1:8000/area",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({coords:points}) // 座標データ送信(JS → JSON → Python)
+        body:JSON.stringify({coords:sendPoints}) // 座標データ送信(JS → JSON → Python)
     });
 
     let data = await res.json(); //　面積データ受信(Python → JSON → JS)
@@ -70,6 +115,7 @@ function resetMap(){
     points = [];
     lastLat = null;
     lastLng = null;
+    firstMove = true;
     // 線を削除
     polyline.setLatLngs([]);
     // マーカーを削除
@@ -130,16 +176,19 @@ function startGPS(){
             marker = L.marker([lat, lng]).addTo(map);
         }
 
-        // 地図を現在地に移動
-        map.panTo([lat, lng]);
-
+        // 地図中心を現在地に移動（初回のみ）
+        if(firstMove){
+            map.panTo([lat, lng]);
+            firstMove = false;
+        }
     },
-
     function(err){
         alert("位置情報取得失敗");
     },
     {
-        enableHighAccuracy:true
+        enableHighAccuracy:true, // 高精度モード
+        maximumAge:0, // 毎回新しい情報を取得
+        timeout:10000 // タイムアウト10秒
     });
 }
 
