@@ -10,7 +10,9 @@
 <body>
 
 <div id="map" style="height:500px;"></div>
+<button onclick="startGPS()">GPS取得開始</button>    
 <button onclick="sendArea()">面積計算</button>
+<button onclick="resetMap()">地図リセット</button>
 <p id="result"></p>
 
 <script>
@@ -20,19 +22,28 @@ let map = L.map('map').setView([33.59,130.40],13);
 // 無料地図を組み込む
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-// クリックした地点を記録する配列と、線を描くためのオブジェクト
+// 座標用の配列と、線オブジェクトを用意
 let points = [];
 let polyline = L.polyline([]).addTo(map);
 
-map.on('click', function(e){
+// クリックで座標追加（テスト用）
+/*map.on('click', function(e){
     points.push([e.latlng.lng, e.latlng.lat]);
     polyline.addLatLng(e.latlng); // 線を追加で伸ばす
-});
+});*/
+
+let lastLat = null;
+let lastLng = null;
+
+// 簡易距離計算（※緯度経度の差の大きさ）
+function distance(a,b,c,d){
+    return Math.sqrt((a - c) ** 2 + (b - d) ** 2);
+}
 
 async function sendArea(){
 
     if(points.length < 3){
-        alert("3点以上必要");
+        alert("3点以上必要です");
         return;
     }
 
@@ -48,6 +59,90 @@ async function sendArea(){
     document.getElementById("result").innerText =
         "面積: " + data.area;
 }
+
+function resetMap(){
+    // GPS監視停止
+    if(watchId !== null){
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+    }
+    // 座標リストを空に
+    points = [];
+    lastLat = null;
+    lastLng = null;
+    // 線を削除
+    polyline.setLatLngs([]);
+    // マーカーを削除
+    if(marker){
+        map.removeLayer(marker);
+        marker = null;
+    }
+    // 結果表示をクリア
+    document.getElementById("result").innerText = "";
+}
+
+// GPS関連
+let watchId = null; // 監視ID
+let marker = null; // 現在地マーカー
+
+function startGPS(){
+
+    // GPS対応確認
+    if(!navigator.geolocation){
+        alert("GPSがつかえないよ");
+        return;
+    }
+
+    // GPS二重起動防止
+    if(watchId){
+        alert("すでに開始してるよ");
+        return;
+    }
+
+    // 位置情報監視開始
+    watchId = navigator.geolocation.watchPosition(function(pos){
+
+        // lat: 緯度、lng: 経度を取得
+        let lat = pos.coords.latitude;
+        let lng = pos.coords.longitude;
+
+        if(lastLat !== null){
+            // あまりに近い場合は無視して追加しない（ノイズ対策）
+            if(distance(lat,lng,lastLat,lastLng) < 0.00005){
+                return;
+            }
+        }
+
+        // 更新
+        lastLat = lat;
+        lastLng = lng;
+
+        // 面積計算用の形式(経度、緯度)で配列に追加
+        points.push([lng, lat]);
+
+        // 地図表示用(緯度、経度)でマーカー表示
+        polyline.addLatLng([lat, lng]);
+
+        // 現在地マーカー更新
+        if(marker){
+            marker.setLatLng([lat, lng]);
+        }else{
+            marker = L.marker([lat, lng]).addTo(map);
+        }
+
+        // 地図を現在地に移動
+        map.panTo([lat, lng]);
+
+    },
+
+    function(err){
+        alert("位置情報取得失敗");
+    },
+    {
+        enableHighAccuracy:true
+    });
+}
+
 </script>
 
 </body>
