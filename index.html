@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>面積ゲーム試作</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+
+<body>
+
+<div id="map" style="height:500px;"></div>
+<button onclick="sendArea()">面積計算</button>
+<p id="result"></p>
+
+<script>
+// 地図を作る。福岡あたりを表示
+let map = L.map('map').setView([33.59,130.40],13);
+
+// 無料地図を組み込む
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+// クリックした地点を記録する配列と、線を描くためのオブジェクト
+let points = [];
+let polyline = L.polyline([]).addTo(map);
+
+map.on('click', function(e){
+    points.push([e.latlng.lng, e.latlng.lat]);
+    polyline.addLatLng(e.latlng); // 線を追加で伸ばす
+});
+
+async function sendArea(){
+
+    if(points.length < 3){
+        alert("3点以上必要");
+        return;
+    }
+
+    //　fetchで、サーバーにPOSTリクエストを送る
+    let res = await fetch("http://127.0.0.1:8000/area",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({coords:points}) // 座標データ送信(JS → JSON → Python)
+    });
+
+    let data = await res.json(); //　面積データ受信(Python → JSON → JS)
+    // ↑ data = { "area": 面積の数値 } という構造で受け取れる
+    document.getElementById("result").innerText =
+        "面積: " + data.area;
+}
+</script>
+
+</body>
+</html>
