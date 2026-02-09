@@ -71,9 +71,11 @@ async def calc_area(data: dict): # ブラウザから送られてきたjsonデ�
     return {"area": area} # areaという名前で、計算結果をjson形式で返す
 
 # ランキング取得
-@app.get("/rankings") # /rankingsにGETリクエストが来たら、以下の関数を実行
+@app.get("/ranking") # /rankingにGETリクエストが来たら、以下の関数を実行
 async def ranking():
 
+    conn = sqlite3.connect("area_battle.db", check_same_thread=False)
+    cursor = conn.cursor()
     cursor.execute("""
         SELECT username, area
         FROM areas

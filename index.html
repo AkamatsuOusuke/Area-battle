@@ -172,7 +172,7 @@ async function sendArea(){
     let end = points[points.length-1];
     closeline = L.polyline([[start[1], start[0]], [end[1], end[0]]], 
     {
-        dashArray:"8.8", // 点線
+        dashArray:"8,8", // 点線
         color: 'red',
         weight:3
     }
@@ -204,6 +204,8 @@ async function sendArea(){
     // ↑ data = { "area": 面積の数値 } という構造で受け取れる
     document.getElementById("result").innerText =
         "面積: " + data.area;
+
+    loadRanking(); // ランキング更新
 }
 
 function resetMap(){
@@ -308,6 +310,10 @@ async function loadRanking(){
     }
     document.getElementById("ranking").innerHTML = text;
 }
+
+// 定期的にランキング更新
+setInterval(loadRanking, 10000); // 10秒ごとに更新
+loadRanking(); // 最初に一回実行 
 
 </script>
 
