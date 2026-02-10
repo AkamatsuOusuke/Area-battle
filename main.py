@@ -26,7 +26,7 @@ import os
 DATABASE_URL = os.environ["DATABASE_URL"]
 
 def get_conn():
-    return psycopg2.connect(DATABASE_URL)
+    return psycopg2.connect(DATABASE_URL, sslmode="require")
 
 app = FastAPI() # サーバー本体を、appという名前で作成
 
