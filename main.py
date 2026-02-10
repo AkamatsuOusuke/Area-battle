@@ -21,7 +21,7 @@ import psycopg2
 import os
 
 # データベース接続
-DATABASE_URL = "postgresql://postgres:[YOUR-PASSWORD]@db.jysjolovimtyvimkhfpd.supabase.co:5432/postgres"
+DATABASE_URL = os.environ["DATABASE_URL"]
 
 def get_conn():
     return psycopg2.connect(DATABASE_URL)
@@ -81,7 +81,7 @@ async def ranking():
         SELECT username, area
         FROM ranking
         ORDER BY area DESC
-        LIMIT 10""") # areasテーブルからusernameとareaを取得し、areaを降順に並べて上位10件を取得
+        LIMIT 10""") # rankingテーブルからusernameとareaを取得し、areaを降順に並べて上位10件を取得
     
     rows = cur.fetchall() # 取得した行をすべて取得
 
