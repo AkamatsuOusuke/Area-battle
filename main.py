@@ -4,6 +4,9 @@ from fastapi import FastAPI
 # ファイルレスポンスを返すためのクラス
 from fastapi.responses import FileResponse 
 
+# 静的ファイル公開用
+from fastapi.staticfiles import StaticFiles
+
 from fastapi import Response
 
 # CORS（Cross-Origin Resource Sharing）を制御するためのミドルウェア。どこからでもアクセスOKにしてくれてるらしい
@@ -29,6 +32,9 @@ def get_conn():
     return psycopg2.connect(DATABASE_URL, sslmode="require")
 
 app = FastAPI() # サーバー本体を、appという名前で作成
+
+# staticにあるファイルを配信
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/") # ルートパス（/）にGETリクエストが来たら、以下の関数を実行
 async def root(response: Response):
