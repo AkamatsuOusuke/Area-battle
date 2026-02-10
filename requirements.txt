@@ -2,4 +2,4 @@ fastapi
 uvicorn
 shapely
 pyproj
-psycopg2-binar
+psycopg2-binary
