@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- スマホ対応 -->
+<title>エリアバトル</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<style>
+    body{
+        margin:0;
+        font-family:"Orbitron",sans-serif;
+        background:#020617;
+        color:white;
+    }
+
+    /* ===== HUD ===== */
+    .hud{
+        background:#020617;
+        padding:14px;
+        border-radius:16px;
+        margin-bottom:12px;
+        box-shadow:0 0 15px rgba(0,200,255,0.3);
+        text-align:center;
+    }
+
+    #result{
+        font-size:20px;
+        color:#22d3ee;
+        margin-bottom:10px;
+    }
+
+    /* ===== 地図 ===== */
+    #map{
+        height:55vh;
+        border-radius:16px;
+        overflow:hidden;
+        box-shadow:0 0 20px rgba(0,200,255,0.25);
+        margin-bottom:14px;
+    }
+
+    /* ===== 操作ボタン ===== */
+    .action-buttons{
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+        width:100%
+    }
+
+    button{
+        width:100%;
+        box-sizing: border-box;
+        padding:16px;
+        font-size:15px;
+        border:none;
+        border-radius:14px;
+        background:linear-gradient(90deg,#0ea5e9,#22d3ee);
+        color:white;
+        font-weight:bold;
+        letter-spacing:1px;
+        box-shadow:0 0 12px rgba(34,211,238,0.4);
+    }
+
+    button:active{
+        transform:scale(0.94);
+    }
+
+    /* ===== スコアボード ===== */
+    .ranking-board{
+        background:#020617;
+        border-radius:16px;
+        padding:14px;
+        box-shadow:0 0 12px rgba(0,200,255,0.2);
+    }
+
+    .rank-item{
+        display:flex;
+        justify-content:space-between;
+        padding:12px;
+        margin-bottom:8px;
+        border-radius:10px;
+        border:1px solid rgba(0,200,255,0.3);
+    }
+
+    .rank-item:first-child{
+        border:1px solid gold;
+        box-shadow:0 0 12px gold;
+    }
+
+
+</style>
+</head>
+
+<body>
+
+<div class="header">Area Battle</div>
+<div class="container">
+    <div class="hud"> <!--hud:ゲームの上部情報欄-->
+        <div id="result">面積: 0</div>
+        <input id="username" type="text" placeholder="PLAYER NAME"/>
+    </div>
+    <div id="map" style="height:500px;"></div>
+    <div class="action-buttons">
+        <button onclick="startGPS()">GPS取得開始</button>    
+        <button onclick="sendArea()">面積計算</button>
+        <button onclick="resetMap()">地図リセット</button>
+    </div>
+
+    <div class="card ranking-board">
+        <h3>🏆 SCORE BOARD</h3>
+        <div id="ranking"></div>
+    </div>
+</div>
+
+
+
+<script>
+// 地図を作る。福岡あたりを表示
+let map = L.map('map',{
+    dragging:true, // ドラッグ移動有効
+    touchZoom:true,  // ピンチズーム有効
+    scrollWheelZoom:true, // マウスホイールズーム有効
+    doubleClickZoom:true, // ダブルクリックズーム有効
+    boxZoom:true, // ドラッグでズーム範囲指定有効
+    keyboard:true // キーボード操作有効
+}).setView([35.68,139.76],13);
+
+const playerIcon = L.icon({
+    iconUrl: "/static/Player.png", // 仮アイコン
+    iconSize: [40, 40],
+    iconAnchor: [20, 20]
+});
+
+
+// サイズ再計算（スマホ画面表示崩れ防止）
+window.addEventListener("resize",()=>{
+    map.invalidateSize();
+})
+
+// 最初の1回だけ地図中心を現在地に移動する用
+let firstMove = true;
+
+// 無料地図を組み込む
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+// 座標用の配列と、線オブジェクトを用意
+let points = [];
+let polyline = L.polyline([]).addTo(map);
+let closeline = null;
+let polygonLayer = null; // 多角形の色塗り
+
+// クリックで座標追加（テスト用）
+/*map.on('click', function(e){
+    points.push([e.latlng.lng, e.latlng.lat]);
+    polyline.addLatLng(e.latlng); // 線を追加で伸ばす
+});*/
+
+let lastLat = null;
+let lastLng = null;
+
+// 簡易距離計算（※緯度経度の差の大きさ）
+function distance(a,b,c,d){
+    return Math.sqrt((a - c) ** 2 + (b - d) ** 2);
+}
+
+async function sendArea(){
+
+    if(points.length < 3){
+        alert("3点以上必要です");
+        return;
+    }
+
+    // 既存の点線削除
+    if(closeline){
+        map.removeLayer(closeline);
+        closeline = null;
+    }
+
+    // 始点終点を点線で結ぶ
+    let start = points[0]
+    let end = points[points.length-1];
+    closeline = L.polyline([[start[1], start[0]], [end[1], end[0]]], 
+    {
+        dashArray:"8,8", // 点線
+        color: '#00fff7',
+        weight:3
+    }
+    ).addTo(map);
+
+    // 最初の点を最後に追加して、多角形を閉じる
+    let sendPoints = [...points]; // 配列のコピー
+
+    let first = sendPoints[0];
+    let last = sendPoints[sendPoints.length-1];
+
+    if(first[0] !== last[0] || first[1] !== last[1]){
+        sendPoints.push(first); // 始点と終点が一致していなければ、ここで最初の点を最後に追加
+    }
+
+    // ユーザー名取得
+    let name = document.getElementById("username").value;
+    if(!name){
+        alert("PLAYER NAMEを入力してね");
+        return;
+    }
+    
+    //　fetchで、サーバーにPOSTリクエストを送って面積を取得
+    let res = await fetch("https://area-battle.onrender.com/area",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+            coords:sendPoints,
+            name:name}) // 座標・名前データ送信(JS → JSON → Python)
+    });
+
+    let data = await res.json(); //　面積データ受信(Python → JSON → JS)
+    // ↑ data = { "area": 面積の数値 } という構造で受け取れる
+    document.getElementById("result").innerText =
+        "面積: " + data.area;
+
+        if(polygonLayer){
+            map.removeLayer(polygonLayer); //既存の多角形を削除
+        }
+        polygonLayer = L.polygon(points.map(p => [p[1], p[0]]),{
+
+            color: "#adff2f", // 線の色
+            fillColor: "#adff2f",   // 塗りつぶしの色（黄緑色）
+            fillOpacity: 0.3
+        }).addTo(map);
+
+    loadRanking(); // ランキング更新
+}
+
+function resetMap(){
+    // GPS監視停止
+    if(watchId !== null){
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+    }
+    // 座標リストを空に
+    points = [];
+    lastLat = null;
+    lastLng = null;
+    firstMove = true;
+    // 線を削除
+    polyline.setLatLngs([]);
+    // マーカーを削除
+    if(marker){
+        map.removeLayer(marker);
+        marker = null;
+    }
+    // 点線を削除
+    if(closeline){
+        map.removeLayer(closeline);
+        closeline = null;
+    }
+    // 多角形を削除
+    if(polygonLayer){
+        map.removeLayer(polygonLayer);
+    }
+    // 結果表示をクリア
+    document.getElementById("result").innerText = "";
+}
+
+// GPS関連
+let watchId = null; // 監視ID
+let marker = null; // 現在地マーカー
+
+function startGPS(){
+
+    // GPS対応確認
+    if(!navigator.geolocation){
+        alert("GPSがつかえないよ");
+        return;
+    }
+
+    // GPS二重起動防止
+    if(watchId){
+        alert("すでに開始してるよ");
+        return;
+    }
+
+    // 位置情報監視開始
+    watchId = navigator.geolocation.watchPosition(function(pos){
+
+        // lat: 緯度、lng: 経度を取得
+        let lat = pos.coords.latitude;
+        let lng = pos.coords.longitude;
+
+        if(lastLat !== null){
+            // あまりに近い場合は無視して追加しない（ノイズ対策）
+            if(distance(lat,lng,lastLat,lastLng) < 0.00005){
+                return;
+            }
+        }
+
+        // 更新
+        lastLat = lat;
+        lastLng = lng;
+
+        // 面積計算用の形式(経度、緯度)で配列に追加
+        points.push([lng, lat]);
+
+        // 地図表示用(緯度、経度)でマーカー表示
+        polyline.addLatLng([lat, lng]);
+
+        // 現在地マーカー更新
+        if(marker){
+            marker.setLatLng([lat, lng]);
+        }else{
+            marker = L.marker([lat, lng],{icon: playerIcon}).addTo(map);
+        }
+
+        L.circle([lat, lng],{
+            radius:3,
+            color:"#00fff7",
+            fillColor:"#00fff7",
+            fillOpacity:0.7
+        }).addTo(map);
+
+        // 地図中心を現在地に移動（初回のみ）
+        if(firstMove){
+            map.panTo([lat, lng]);
+            firstMove = false;
+        }
+    },
+    function(err){
+        alert("位置情報取得失敗");
+    },
+    {
+        enableHighAccuracy:true, // 高精度モード。できるだけ頻繁に位置情報を更新。
+        maximumAge:0, // 毎回新しい情報を取得
+        timeout:10000 // タイムアウト10秒
+    });
+}
+
+async function loadRanking(){
+    let res = await fetch("https://area-battle.onrender.com/ranking");
+    let data = await res.json();
+
+    let text= "";
+    let rank = 1;
+
+    for(let r of data){
+        if(rank == 1){
+            crown = "🥇";
+        }
+        else if(rank == 2){
+            crown = "🥈";
+        }
+        else if(rank == 3){
+            crown = "🥉";
+        }
+        else{
+            crown ="";
+        }
+
+        text += crown + rank + "位 " + r.username + " : " + r.area + "<br>";
+        rank++;
+    }
+    document.getElementById("ranking").innerHTML = text;
+}
+
+// ランキング更新
+loadRanking(); // 最初に一回実行 
+
+</script>
+
+</body>
+</html>
