@@ -2,7 +2,9 @@
 from fastapi import FastAPI
 
 # ファイルレスポンスを返すためのクラス
-from fastapi.responses import FileResponse  
+from fastapi.responses import FileResponse 
+
+from fastapi import Response
 
 # CORS（Cross-Origin Resource Sharing）を制御するためのミドルウェア。どこからでもアクセスOKにしてくれてるらしい
 from fastapi.middleware.cors import CORSMiddleware 
@@ -30,6 +32,7 @@ app = FastAPI() # サーバー本体を、appという名前で作成
 
 @app.get("/") # ルートパス（/）にGETリクエストが来たら、以下の関数を実行
 async def root():
+    response.headers["Cache-Control"] = "no-store"  # ブラウザが常に最新を取得する
     return FileResponse("index.html") # index.htmlファイルを返す
 
 app.add_middleware(
