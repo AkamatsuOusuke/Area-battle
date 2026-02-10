@@ -45,9 +45,12 @@
         display:flex;
         flex-direction:column;
         gap:10px;
+        width:100%
     }
 
     button{
+        width:100%;
+        box-sizing: border-box;
         padding:16px;
         font-size:15px;
         border:none;
@@ -94,7 +97,7 @@
 <div class="header">Area Battle</div>
 <div class="container">
     <div class="hud"> <!--hud:ゲームの上部情報欄-->
-        <div id="result">面積: --</div>
+        <div id="result">面積: 0</div>
         <input id="username" type="text" placeholder="PLAYER NAME"/>
     </div>
     <div id="map" style="height:500px;"></div>
