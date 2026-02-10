@@ -31,7 +31,7 @@ def get_conn():
 app = FastAPI() # サーバー本体を、appという名前で作成
 
 @app.get("/") # ルートパス（/）にGETリクエストが来たら、以下の関数を実行
-async def root():
+async def root(response: Response):
     response.headers["Cache-Control"] = "no-store"  # ブラウザが常に最新を取得する
     return FileResponse("index.html") # index.htmlファイルを返す
 
