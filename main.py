@@ -13,11 +13,18 @@ from shapely.geometry import Polygon
 # 座標変換ライブラリ
 from pyproj import Transformer
 
-# データベース操作用ライブラリ
-import sqlite3
-
 # 日付操作用ライブラリ
 import datetime
+
+# データベース接続用
+import psycopg2
+import os
+
+# データベース接続
+DATABASE_URL = "postgresql://postgres:[YOUR-PASSWORD]@db.jysjolovimtyvimkhfpd.supabase.co:5432/postgres"
+
+def get_conn():
+    return psycopg2.connect(DATABASE_URL)
 
 app = FastAPI() # サーバー本体を、appという名前で作成
 
@@ -39,34 +46,28 @@ transformer = Transformer.from_crs(
     always_xy=True,
 )
 
-# DB初期化
-conn = sqlite3.connect("area_battle.db", check_same_thread=False) # SQLiteに接続（ファイルがなければ自動作成）
-cursor = conn.cursor() # カーソルを作成
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS areas(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT,
-    area REAL,
-    created_at TEXT)""") # id, username, area, created_atカラムを持つareasテーブルを作成
-conn.commit() # 変更を保存
-
-
 @app.post("/area") # /areaにPOSTリクエストが来たら、以下の関数を実行
 async def calc_area(data: dict): # ブラウザから送られてきたjsonデータをdataとして受け取る
     coords = data["coords"]
-    name = data.get("name", "匿名さん")
+    name = data["name"]
 
     polygon = Polygon(coords) # 受け取った座標データを多角形の図形に変換
 
     area = polygon.area # 多角形の面積を計算(.areaで求めれるらしい)
 
+    conn = get_conn() # 
+
+    cur = conn.cursor() #
+
     now = datetime.datetime.now().isoformat() # 現在日時をISO形式で取得
 
-    cursor.execute(
-        "INSERT INTO areas (username, area, created_at) VALUES (?, ?, ?)", 
+    cur.execute(
+        "INSERT INTO ranking (username, area, created_at) VALUES (%s, %s, %s)", 
         (name, area, now)
         ) #areasテーブルに、username, area, created_atデータを挿入
     conn.commit()
+    cur.close()
+    conn.close()
 
     return {"area": area} # areaという名前で、計算結果をjson形式で返す
 
@@ -74,15 +75,18 @@ async def calc_area(data: dict): # ブラウザから送られてきたjsonデ�
 @app.get("/ranking") # /rankingにGETリクエストが来たら、以下の関数を実行
 async def ranking():
 
-    conn = sqlite3.connect("area_battle.db", check_same_thread=False)
-    cursor = conn.cursor()
-    cursor.execute("""
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute("""
         SELECT username, area
-        FROM areas
+        FROM ranking
         ORDER BY area DESC
         LIMIT 10""") # areasテーブルからusernameとareaを取得し、areaを降順に並べて上位10件を取得
     
-    rows = cursor.fetchall() # 取得した行をすべて取得
+    rows = cur.fetchall() # 取得した行をすべて取得
+
+    cur.close()
+    conn.close()
 
     result =[]
     for r in rows: 

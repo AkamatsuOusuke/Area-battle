@@ -98,7 +98,7 @@
         <input id="username" type="text" placeholder="PLAYER NAME"/>
     </div>
     <div id="map" style="height:500px;"></div>
-    <div class=""action-buttons">
+    <div class="action-buttons">
         <button onclick="startGPS()">GPS取得開始</button>    
         <button onclick="sendArea()">面積計算</button>
         <button onclick="resetMap()">地図リセット</button>
@@ -124,7 +124,7 @@ let map = L.map('map',{
 }).setView([33.59,130.40],13);
 
 const playerIcon = L.icon({
-    iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png", // 仮アイコン
+    iconUrl: "Player.png", // 仮アイコン
     iconSize: [40, 40],
     iconAnchor: [20, 20]
 });
@@ -291,9 +291,9 @@ function startGPS(){
         }
 
         L.circle([lat, lng],{
-            radius:5,
+            radius:3,
             color:"#00fff7",
-            fillcolor:"#00fff7",
+            fillColor:"#00fff7",
             fillOpacity:0.7
         }).addTo(map);
 
