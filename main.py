@@ -60,6 +60,9 @@ async def calc_area(data: dict): # ブラウザから送られてきたjsonデ�
     coords = data["coords"]
     name = data["name"]
 
+    # 座標変換（緯度経度→平面直角座標系）
+    projected = [transformer.transform(lng, lat) for lng, lat in coords]
+    
     polygon = Polygon(coords) # 受け取った座標データを多角形の図形に変換
 
     area = polygon.area # 多角形の面積を計算(.areaで求めれるらしい)
