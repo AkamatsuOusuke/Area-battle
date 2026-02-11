@@ -2,8 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- スマホ対応 -->
+
+    <meta name="theme-color" content="#00fff7"><!--スプラッシュ-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><!-- スマホ対応 -->
     <title>エリアバトル</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap"
@@ -369,9 +370,17 @@
       // ランキング更新
       loadRanking(); // 最初に一回実行
     </script>
+
+
     <script>
     if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("/static/service-worker.js");
+    }
+    </script>
+
+    <script>
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/static/sw.js");
     }
     </script>
   </body>
