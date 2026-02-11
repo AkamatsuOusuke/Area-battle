@@ -90,7 +90,7 @@ async def ranking():
         SELECT username, area
         FROM ranking
         ORDER BY area DESC
-        LIMIT 10""") # rankingテーブルからusernameとareaを取得し、areaを降順に並べて上位10件を取得
+        LIMIT 100""") # rankingテーブルからusernameとareaを取得し、areaを降順に並べて上位10件を取得
     
     rows = cur.fetchall() # 取得した行をすべて取得
 
