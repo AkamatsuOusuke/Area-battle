@@ -11,7 +11,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="manifest" href="/static/manifest.json">
+    <link rel="manifest" href="/static/manifest.json"><!--アプリ設定(manifest.js)-->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
       body {
@@ -19,6 +19,16 @@
         font-family: "Orbitron", sans-serif;
         background: #020617;
         color: white;
+      }
+
+      .header{
+        text-align:center;
+        padding:10px;
+        font-size:22px;
+      }
+
+      .container{
+        padding:10px;
       }
 
       /* ===== HUD ===== */
@@ -97,6 +107,44 @@
   </head>
 
   <body>
+    <!--タイトル画面-->
+    <div id="titleScreen" style="
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:#020617;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+    ">
+
+    <h1 style="font-size:40px;color:#22ee77;">AREA BATTLE</h1>
+
+    <input id="titlename" type="text" placeholder="PLAYER NAME"
+    style="
+    padding:12px;
+    margin:20px;
+    border-radius:
+    10px;border:none;
+    text-align:center;"
+    >
+
+    <button onclick="startGame()" style="
+    padding:16px 30px;
+    font-size:18px;
+    border-radius:14px;
+    background:linear-gradient(90deg,#31bb91,#22d3ee);
+    border:none;
+    color:black;
+    ">GPS開始
+    </button>
+
+    </div>
+
     <div class="header">Area Battle</div>
     <div class="container">
       <div class="hud">
@@ -106,7 +154,6 @@
       </div>
       <div id="map" style="height: 500px"></div>
       <div class="action-buttons">
-        <button onclick="startGPS()">GPS取得開始</button>
         <button onclick="sendArea()">面積計算</button>
         <button onclick="resetMap()">地図リセット</button>
       </div>
@@ -153,18 +200,31 @@
       let closeline = null;
       let polygonLayer = null; // 多角形の色塗り
 
-      // クリックで座標追加（テスト用）
-      /*map.on('click', function(e){
-    points.push([e.latlng.lng, e.latlng.lat]);
-    polyline.addLatLng(e.latlng); // 線を追加で伸ばす
-});*/
-
       let lastLat = null;
       let lastLng = null;
 
       // 簡易距離計算（※緯度経度の差の大きさ）
       function distance(a, b, c, d) {
         return Math.sqrt((a - c) ** 2 + (b - d) ** 2);
+      }
+
+      function startGame(){
+        
+        // ユーザー名取得
+        let name = document.getElementById("titlename").value;
+        if (!name) {
+          alert("PLAYER NAMEを入力してね");
+          return;
+        }
+
+        // HUDの名前欄にコピー
+        document.getElementById("username").value = name;
+
+        // タイトル画面消す
+        document.getElementById("titleScreen").style.display = "none";
+
+        // GPS開始
+        startGPS();
       }
 
       async function sendArea() {
@@ -369,13 +429,6 @@
 
       // ランキング更新
       loadRanking(); // 最初に一回実行
-    </script>
-
-
-    <script>
-    if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/static/service-worker.js");
-    }
     </script>
 
     <script>
