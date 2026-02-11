@@ -379,7 +379,7 @@
               marker = L.marker([lat, lng], { icon: playerIcon }).addTo(map);
             }
 
-            L.circle([lat, lng], {
+            let c = L.circle([lat, lng], {
               radius: 2,
               color: "#00fff7",
               fillColor: "#00fff7",
@@ -431,6 +431,22 @@
 
       // ランキング更新
       loadRanking(); // 最初に一回実行
+
+
+       // アプリを閉じたとき
+      window.addEventListener("pagehide", () => {
+        if (watchId !== null) {
+          navigator.geolocation.clearWatch(watchId);
+          watchId = null;
+        }
+      });
+
+      // 画面が裏に回ったとき
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          firstMove = true;
+        }
+      });
     </script>
 
     <script>
@@ -438,5 +454,7 @@
         navigator.serviceWorker.register("/static/sw.js");
     }
     </script>
+
+
   </body>
 </html>
