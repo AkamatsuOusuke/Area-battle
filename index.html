@@ -10,6 +10,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="manifest" href="/static/manifest.json">
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
       body {
@@ -367,6 +368,11 @@
 
       // ランキング更新
       loadRanking(); // 最初に一回実行
+    </script>
+    <script>
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/static/service-worker.js");
+    }
     </script>
   </body>
 </html>
