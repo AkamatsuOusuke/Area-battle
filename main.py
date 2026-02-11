@@ -51,7 +51,7 @@ app.add_middleware(
 # 座標変換器の作成（緯度経度→平面直角座標系）
 transformer = Transformer.from_crs(
     "EPSG:4326",  # WGS84（緯度経度）
-    "EPSG:3857",  # Webメルカトル（平面直角座標系）
+    "EPSG:6677",  # Webメルカトル（日本平面直角）
     always_xy=True,
 )
 
@@ -62,7 +62,7 @@ async def calc_area(data: dict): # ブラウザから送られてきたjsonデ�
 
     # 座標変換（緯度経度→平面直角座標系）
     projected = [transformer.transform(lng, lat) for lng, lat in coords]
-    
+
     polygon = Polygon(coords) # 受け取った座標データを多角形の図形に変換
 
     area = polygon.area # 多角形の面積を計算(.areaで求めれるらしい)
