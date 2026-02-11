@@ -227,6 +227,7 @@
         startGPS();
       }
 
+      // 面積計算用
       async function sendArea() {
         if (points.length < 3) {
           alert("3点以上必要です。");
@@ -300,12 +301,9 @@
         loadRanking(); // ランキング更新
       }
 
+      // 地図リセット用
       function resetMap() {
-        // GPS監視停止
-        if (watchId !== null) {
-          navigator.geolocation.clearWatch(watchId);
-          watchId = null;
-        }
+
         // 座標リストを空に
         points = [];
         lastLat = null;
@@ -313,11 +311,12 @@
         firstMove = true;
         // 線を削除
         polyline.setLatLngs([]);
-        // マーカーを削除
-        if (marker) {
-          map.removeLayer(marker);
-          marker = null;
+
+        // 円を削除
+        for(let c of circles){
+          map.removeLayer(c);
         }
+        circles = [];
         // 点線を削除
         if (closeline) {
           map.removeLayer(closeline);
@@ -334,6 +333,7 @@
       // GPS関連
       let watchId = null; // 監視ID
       let marker = null; // 現在地マーカー
+      let circles = [];
 
       function startGPS() {
         // GPS対応確認
@@ -385,6 +385,8 @@
               fillColor: "#00fff7",
               fillOpacity: 0.7,
             }).addTo(map);
+
+            circles.push(c);
 
             // 地図中心を現在地に移動（初回のみ）
             if (firstMove) {
