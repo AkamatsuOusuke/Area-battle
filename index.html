@@ -180,7 +180,7 @@
       const playerIcon = L.icon({
         iconUrl: "/static/Player.png", // 仮アイコン
         iconSize: [40, 40],
-        iconAnchor: [20, 20],
+        iconAnchor: [20, 40], //アイコンの位置
       });
 
       // サイズ再計算（スマホ画面表示崩れ防止）
@@ -192,19 +192,20 @@
       let firstMove = true;
 
       // 無料地図を組み込む
+      L.tileLayer(
       // 衛星写真
-      /*L.tileLayer(
-      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      /*"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
       {
       attribution:"Tiles © Esri"
       }).addTo(map);*/
 
       // Dark Matter
-      L.tileLayer(
       "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
       {
+        opacity: 0.7,
         attribution:"©OpenStreetMap ©CartoDB"
       }).addTo(map);
+
       // 座標用の配列と、線オブジェクトを用意
       let points = [];
       let polyline = L.polyline([]).addTo(map);
