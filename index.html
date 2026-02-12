@@ -223,10 +223,10 @@
         if(installPrompt){
           // Chrome用
           installPrompt.prompt();
-          const choice = await installPrompt.userChoice;
+          const choice = await installPrompt.userChoice; //ユーザが「インストールする/キャンセル」を選んだ結果を待つ
           console.log(choice.outcome === "accepted" ? "PWAがインストールされました" : "キャンセル");
-          installPrompt = null;
-          installBtn.style.display = "none";
+          installPrompt = null; // 一度使ったら再度ボタンを押せないように
+          installBtn.style.display = "none"; // ボタンを非表示
         } else if(navigator.userAgent.match(/iPhone|iPad|iPod/)){
           // iOS Safari用
           alert("Safariの共有ボタン → 『ホーム画面に追加』でインストールできます");
