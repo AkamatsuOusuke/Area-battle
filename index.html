@@ -192,10 +192,11 @@
       let firstMove = true;
 
       // 無料地図を組み込む
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
-        map,
-      );
-
+      L.tileLayer(
+      "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+      {
+        attribution:"©OpenStreetMap ©CartoDB"
+      }).addTo(map);
       // 座標用の配列と、線オブジェクトを用意
       let points = [];
       let polyline = L.polyline([]).addTo(map);
