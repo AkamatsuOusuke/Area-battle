@@ -192,6 +192,14 @@
       let firstMove = true;
 
       // 無料地図を組み込む
+      // 衛星写真
+      /*L.tileLayer(
+      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      {
+      attribution:"Tiles © Esri"
+      }).addTo(map);*/
+
+      // Dark Matter
       L.tileLayer(
       "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
       {
