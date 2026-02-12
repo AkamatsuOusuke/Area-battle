@@ -1,12 +1,41 @@
-// オフラインでも起動できるように
+const CACHE_NAME = "area-battle-v1"; // キャッシュ名
+const urlsToCache = [
+  "/",
+  "/index.html",
+  "/static/icon.png",
+  "/static/style.css",
+  "/static/main.js",
+  "/static/Player.png",
+  "/static/manifest.json"
+];
+
+// インストール時にキャッシュ
 self.addEventListener("install", e => {
   e.waitUntil(
-    caches.open("area-battle-v1").then(cache => {
-      return cache.addAll([
-        "/",
-        "/index.html",
-        "/static/icon.png"
-      ]);
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(urlsToCache);
     })
+  );
+  self.skipWaiting(); // 新しいSWをすぐ有効化
+});
+
+// 古いキャッシュを削除（安全なアップデート用）
+self.addEventListener("activate", e => {
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(
+        keys
+          .filter(key => key !== CACHE_NAME) // 今のキャッシュ以外を削除
+          .map(key => caches.delete(key))
+      )
+    )
+  );
+  self.clients.claim(); // すぐにコントロールを引き継ぐ
+});
+
+// フェッチ時はキャッシュ優先(オフラインでもキャッシュから返す)
+self.addEventListener("fetch", e => {
+  e.respondWith(
+    caches.match(e.request).then(response => response || fetch(e.request))
   );
 });
