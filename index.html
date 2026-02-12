@@ -144,7 +144,7 @@
     ">GPS開始
     </button>
 
-    <button id="installbtn" style="
+    <button id="installBtn" style="
     display:none;
     margin:10px auto;
     padding:12px 24px;
@@ -205,6 +205,7 @@
       // インストールボタン表示
       let installPrompt = null;
       const installBtn = document.getElementById("installBtn");
+      installBtn.style.display = "none"; // 初期非表示
 
       window.addEventListener("beforeinstallprompt", (e) => {
           e.preventDefault();       // 自動表示を止める
@@ -212,21 +213,27 @@
           installBtn.style.display = "block"; // ボタン表示
       });
 
-      // インストール実行
-      installbtn.addEventListener("click", async () => {
-        if (!installPrompt) return;
+      //iOS Safari向け
+      if(navigator.userAgent.match(/iPhone|iPad|iPod/)){
+        installBtn.style.display = "block"; // 手動案内用に表示
+      }
 
-        installPrompt.prompt(); // インストールダイアログ表示
-        const choice = await installPrompt.userChoice;
-
-        if (choice.outcome === "accepted") {
-            console.log("PWAがインストールされました!");
+      // ボタンクリック処理
+      installBtn.addEventListener("click", async () => {
+        if(installPrompt){
+          // Chrome用
+          installPrompt.prompt();
+          const choice = await installPrompt.userChoice;
+          console.log(choice.outcome === "accepted" ? "PWAがインストールされました" : "キャンセル");
+          installPrompt = null;
+          installBtn.style.display = "none";
+        } else if(navigator.userAgent.match(/iPhone|iPad|iPod/)){
+          // iOS Safari用
+          alert("Safariの共有ボタン → 『ホーム画面に追加』でインストールできます");
         } else {
-            console.log("PWAインストールはキャンセルされました");
+          // それ以外
+          alert("このブラウザでは自動インストールできません。ブラウザメニューからホーム画面に追加してください");
         }
-
-        installPrompt = null;
-        installBtn.style.display = "none"; // 一度使ったら非表示
       });
 
       // 最初の1回だけ地図中心を現在地に移動する用
