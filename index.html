@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="manifest" href="/static/manifest.json"><!--アプリ設定(manifest.js)-->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script> <!--supabaseクライアントをセットアップ-->
+
     <style>
       body {
         margin: 0;
@@ -39,6 +41,24 @@
         margin-bottom: 12px;
         box-shadow: 0 0 15px rgba(0, 200, 255, 0.3);
         text-align: center;
+      }
+
+      #titleScreen{
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 12px; /* ボタンや入力間の縦間隔を統一 */
+      }
+
+      .title-btn{
+          padding: 16px 30px;
+          font-size: 18px;
+          border-radius: 14px;
+          background: linear-gradient(90deg, #31bb91, #22d3ee);
+          border: none;
+          color: black;
+          width: 200px; /* 横幅を統一 */
       }
 
       #result {
@@ -134,15 +154,11 @@
     font-size:16px;"
     >
 
-    <button onclick="startGame()" style="
-    padding:16px 30px;
-    font-size:18px;
-    border-radius:14px;
-    background:linear-gradient(90deg,#31bb91,#22d3ee);
-    border:none;
-    color:black;
-    ">GPS開始
-    </button>
+    <button class="title-btn" onclick="startGame()">GPS開始</button>
+
+    <button class="title-btn" onclick="signUp()">新規登録</button>
+
+    <button class="title-btn" onclick="signIn()">ログイン</button>
 
     <button id="installBtn" style="
     display:none;
@@ -155,8 +171,8 @@
     color:black;
     font-weight:bold;
     cursor:pointer;
+    width:200px
     ">アプリをインストール</button>
-
 
     </div>
 
@@ -180,6 +196,73 @@
     </div>
 
     <script>
+
+      // supabase 初期化
+      const SUPABASE_URL = "https://jysjolovimtyvimkhfpd.supabase.co";
+      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5c2pvbG92aW10eXZpbWtoZnBkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3MDA5MzQsImV4cCI6MjA4NjI3NjkzNH0.YDrF0H_mq99R5LIhcFVe4EAc-Z0ZwyB-WUH9XwdqDTo";
+      const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      // サインアップ(新規登録)
+      async function signUp(){
+          const email = prompt("メールアドレスを入力");
+          const password = prompt("パスワードを入力");
+
+          if (!email || !password) {
+            alert("メールアドレスとパスワードは必須です");
+            return;
+          }
+
+          const { data, error } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+          });// メールアドレスとパスワードをsupabaseに登録
+
+          if (error) {
+            alert("登録エラー: " + error.message);
+          } else {
+            alert("登録成功！メールを確認してください");
+          }
+      }
+
+      // サインイン(ログイン)
+      async function signIn(){
+          const email = prompt("メールアドレスを入力");
+          const password = prompt("パスワードを入力");
+
+          if (!email || !password) {
+              alert("メールアドレスとパスワードは必須です");
+              return;
+          }
+
+          const { data, error } = await supabase.auth.signInWithPassword({
+              email: email,
+              password: password,
+          });// 入力したメールアドレスとパスワードでログイン
+
+           if (error) {
+              alert("ログインエラー: " + error.message);
+          } else {
+              alert("ログイン成功！ようこそ " + data.user.email);
+              document.getElementById("username").value = data.user.email; // HUDにコピー
+              document.getElementById("titleScreen").style.display = "none"; // タイトル画面消す
+              startGPS(); // GPS開始
+          }
+      }
+      
+      // ページ読み込み時にログイン状態確認
+      async function checkLogin() {
+          const { data } = await supabase.auth.getSession();
+          if (data.session) {
+            // すでにログイン済み
+            document.getElementById("username").value = data.session.user.email;
+            document.getElementById("titleScreen").style.display = "none";
+            startGPS();
+          }
+      }// ページをリロードしてもログイン状態を確認
+
+      checkLogin();
+
+
       // 地図を作る。東京を表示
       let map = L.map("map", {
         dragging: true, // ドラッグ移動有効
