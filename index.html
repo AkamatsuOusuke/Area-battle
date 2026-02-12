@@ -144,6 +144,20 @@
     ">GPS開始
     </button>
 
+    <button id="installbtn" style="
+    display:none;
+    margin:10px auto;
+    padding:12px 24px;
+    font-size:16px;
+    border-radius:14px;
+    border:none;
+    background:linear-gradient(90deg,#ff9900,#ffcc33);
+    color:black;
+    font-weight:bold;
+    cursor:pointer;
+    ">アプリをインストール</button>
+
+
     </div>
 
     <div class="header">Area Battle</div>
@@ -180,12 +194,39 @@
       const playerIcon = L.icon({
         iconUrl: "/static/Player.png", // 仮アイコン
         iconSize: [40, 40],
-        iconAnchor: [20, 40], //アイコンの位置
+        iconAnchor: [20, 40], //アイコンの位置。少し上に
       });
 
       // サイズ再計算（スマホ画面表示崩れ防止）
       window.addEventListener("resize", () => {
         map.invalidateSize();
+      });
+
+      // インストールボタン表示
+      let installPrompt = null;
+      const installBtn = document.getElementById("installBtn");
+
+      window.addEventListener("beforeinstallprompt", (e) => {
+          e.preventDefault();       // 自動表示を止める
+          installPrompt = e;
+          installBtn.style.display = "block"; // ボタン表示
+      });
+
+      // インストール実行
+      installBtn.addEventListener("click", async () => {
+        if (!installPrompt) return;
+
+        installPrompt.prompt(); // インストールダイアログ表示
+        const choice = await installPrompt.userChoice;
+
+        if (choice.outcome === "accepted") {
+            console.log("PWAがインストールされました!");
+        } else {
+            console.log("PWAインストールはキャンセルされました");
+        }
+
+        installPrompt = null;
+        installBtn.style.display = "none"; // 一度使ったら非表示
       });
 
       // 最初の1回だけ地図中心を現在地に移動する用
