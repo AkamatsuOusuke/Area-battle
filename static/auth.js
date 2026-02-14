@@ -56,6 +56,8 @@ async function signUp(){
 
     if (error) {
     alert("登録エラー: " + error.message);
+    btn.disabled = false;
+    btn.textContent = originalText;
     } else {
     alert("登録成功！メールを確認してください");
     // 成功時、メール認証待ちになるので「確認待ち」の状態にする
@@ -86,11 +88,12 @@ async function signIn(){
 
     if (error) {
         alert("ログインエラー: " + error.message);
+        btn.disabled = false;
+        btn.textContent = originalText;
     } else {
         alert("ログイン成功！ようこそ " + data.user.email);
         document.getElementById("username").value = data.user.email; // HUDにコピー
         document.getElementById("titleScreen").style.display = "none"; // タイトル画面消す
-        startGPS(); // GPS開始
     }
 }
 
