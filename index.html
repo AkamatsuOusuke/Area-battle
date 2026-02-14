@@ -144,7 +144,7 @@
 
     <h1 style="font-size:40px;color:#22ee77;">AREA BATTLE</h1>
 
-    <input id="titlename" type="text" placeholder="PLAYER NAME"
+    <input id="titlename" class="playerNameInput" type="text" placeholder="PLAYER NAME"
     style="
     padding:12px;
     margin:20px;
@@ -154,7 +154,7 @@
     font-size:16px;"
     >
 
-    <button class="title-btn" onclick="startGame()">GPS開始</button>
+    <button id="startGameBtn" class="title-btn" onclick="startGame()">GPS開始（ゲストログイン）</button>
 
     <button class="title-btn" onclick="signUp()">新規登録</button>
 
@@ -181,7 +181,7 @@
       <div class="hud">
         <!--hud:ゲームの上部情報欄-->
         <div id="result">面積: 0</div>
-        <input id="username" type="text" placeholder="PLAYER NAME" style="text-align:center;"/>
+        <input id="username" class="playerNameInput" type="text" placeholder="PLAYER NAME" style="text-align:center;"/>
       </div>
       <div id="map" style="height: 500px"></div>
       <div class="action-buttons">
@@ -198,12 +198,12 @@
     <script>
 
       // supabase 初期化
-      /*const SUPABASE_URL = "https://jysjolovimtyvimkhfpd.supabase.co";
+      const SUPABASE_URL = "https://jysjolovimtyvimkhfpd.supabase.co";
       const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5c2pvbG92aW10eXZpbWtoZnBkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3MDA5MzQsImV4cCI6MjA4NjI3NjkzNH0.YDrF0H_mq99R5LIhcFVe4EAc-Z0ZwyB-WUH9XwdqDTo";
-      const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);*/
+      const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
       // サインアップ(新規登録)
-      /*async function signUp(){
+      async function signUp(){
           const email = prompt("メールアドレスを入力");
           const password = prompt("パスワードを入力");
 
@@ -222,10 +222,10 @@
           } else {
             alert("登録成功！メールを確認してください");
           }
-      }*/
+      }
 
       // サインイン(ログイン)
-      /*async function signIn(){
+      async function signIn(){
           const email = prompt("メールアドレスを入力");
           const password = prompt("パスワードを入力");
 
@@ -247,10 +247,10 @@
               document.getElementById("titleScreen").style.display = "none"; // タイトル画面消す
               startGPS(); // GPS開始
           }
-      }*/
+      }
       
       // ページ読み込み時にログイン状態確認
-      /*async function checkLogin() {
+      async function checkLogin() {
           const { data } = await sb.auth.getSession();
           if (data.session) {
             // すでにログイン済み
@@ -260,8 +260,81 @@
           }
       }// ページをリロードしてもログイン状態を確認
 
-      checkLogin();*/
+      checkLogin();
 
+      // GPS開始(ゲストログイン)とGPS開始の切り替え
+      async function updateStartButton(){
+        const { data } = await sb.auth.getUser();
+        const user = data.user;
+
+        const btn = document.getElementById("startGameBtn");
+
+        if(!btn) return;
+
+        if(user){
+          btn.textContent = "GPS開始" ;
+        } else {
+          btn.textContent = "GPS開始（ゲストログイン）";
+        }
+      }
+
+      updateStartButton();
+
+      // ログインUI制御
+      async function updateLoginUI(){
+        const { data } = await sb.auth.getUser();
+        const user = data.user;
+
+        // 
+        const inputs = document.querySelectorAll(".playerNameInput");
+
+        if(user){
+          inputs.forEach(el => el.style.display = "none");
+        } else {
+          inputs.forEach(el => el.style.display = "block");
+        }
+      }
+
+      updateLoginUI();
+
+      // 前回の名前自動復元
+      async function restoreName(){
+
+        const { data } = await sb.auth.getUser();
+        const user = data.user;
+
+        if(user){
+          const name = user.user_metadata?.display_name;
+
+          if(name){
+            document.getElementById("username").value = name;
+          }
+        } else {
+          const guest = localStorage.getItem("guest_name");
+
+          if(guest){
+            document.getElementById("titlename").value = guest;
+            document.getElementById("username").value = guest;
+          }
+        }
+      }
+
+      restoreName();
+
+      // auth監視
+      sb.auth.onAuthStateChange((event, session) => {
+        const btn = document.getElementById("startGameBtn");
+
+        if(!btn) return;
+
+        if(session){
+          btn.textContent = "GPS開始";
+        } else {
+          btn.textContent = "GPS開始（ゲストログイン）";
+        }
+
+        updateLoginUI();
+      });
 
       // 地図を作る。東京を表示
       let map = L.map("map", {
@@ -319,7 +392,7 @@
         }
       });
 
-      // 最初の1回だけ地図中心を現在地に移動する用
+      // 最初の1回だけ地図中心を現在地に移動する用flag
       let firstMove = true;
 
       // 無料地図を組み込む
@@ -352,13 +425,40 @@
       }
 
       // タイトル画面
-      function startGame(){
+      async function startGame(){
         
-        // ユーザー名取得
-        let name = document.getElementById("titlename").value;
-        if (!name) {
-          alert("PLAYER NAMEを入力してね");
-          return;
+        const { data } = await sb.auth.getUser();
+        const user = data.user;
+
+        let name;
+
+        // ユーザー名取得(ログイン時はemailがユーザ名に)
+        if(user){
+
+          // display_name優先。supabaseのuser_metadataを使う
+          name = user.user_metadata?.display_name;
+
+          // 無ければ入力させる
+          if(!name){
+            name = prompt("表示名を入力してね");
+            if(!name) return;
+
+            // supabaseに保存
+            await sb.auth.updateUser({
+              data:{ display_name:name }
+            });
+          }
+
+        } else {
+          name = document.getElementById("titlename").value;
+
+          if (!name) {
+            alert("PLAYER NAMEを入力してね");
+            return;
+          }
+
+          // ゲストはLocalStorage保存
+          localStorage.setItem("guest_name", name);
         }
 
         // HUDの名前欄にコピー
@@ -417,18 +517,22 @@
         }
 
         //　fetchで、サーバーにPOSTリクエストを送って面積を取得
+        const { data: userData } = await sb.auth.getUser();
+        const user = userData.user;
+
         let res = await fetch("https://area-battle.onrender.com/area", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             coords: sendPoints,
             name: name,
+            user_id: user ? user.id : null
           }), // 座標・名前データ送信(JS → JSON → Python)
         });
 
-        let data = await res.json(); //　面積データ受信(Python → JSON → JS)
-        // ↑ data = { "area": 面積の数値 } という構造で受け取れる
-        document.getElementById("result").innerText = "面積: " + data.area;
+        let result = await res.json(); //　面積データ受信(Python → JSON → JS)
+        // ↑ result = { "area": 面積の数値 } という構造で受け取れる
+        document.getElementById("result").innerText = "面積: " + result.area;
 
         if (polygonLayer) {
           map.removeLayer(polygonLayer); //既存の多角形を削除
@@ -559,6 +663,8 @@
         let rank = 1;
 
         for (let r of data) {
+          let crown = ""
+
           if (rank == 1) {
             crown = "🥇";
           } else if (rank == 2) {
@@ -577,6 +683,12 @@
 
       loadRanking(); // 最初に一回実行
 
+      // まとめる
+      window.addEventListener("load", ()=>{
+        updateStartButton();
+        updateLoginUI();
+        restoreName();
+      });
 
        // アプリを閉じたとき
       window.addEventListener("pagehide", () => {
