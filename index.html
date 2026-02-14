@@ -450,7 +450,8 @@
           }
 
         } else {
-          name = document.getElementById("titlename").value;
+          //　ゲストログイン時はtitlename
+          name = document.getElementById("titlename").value || document.getElementById("username").value;
 
           if (!name) {
             alert("PLAYER NAMEを入力してね");
