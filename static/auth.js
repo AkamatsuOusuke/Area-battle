@@ -94,6 +94,7 @@ async function signIn(){
         alert("ログイン成功！ようこそ " + data.user.email);
         document.getElementById("username").value = data.user.email; // HUDにコピー
         document.getElementById("titleScreen").style.display = "none"; // タイトル画面消す
+        startGPS();
     }
 }
 
