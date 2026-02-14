@@ -1,6 +1,22 @@
 // supabase 初期化
 let sb;
 
+// Supabaseの準備ができるまで待機する関数
+async function waitForSupabase() {
+    return new Promise((resolve) => {
+        const check = () => {
+            const sp = window.supabase || (typeof supabase !== 'undefined' ? supabase : null);
+            if (sp) {
+                resolve(sp);
+            } else {
+                console.log("Supabaseを待っています...");
+                setTimeout(check, 100); // 0.1秒ごとに確認
+            }
+        };
+        check();
+    });
+}
+
 function initSupabase(){
     // window.supabase または supabase が存在するかチェック
     const supabaseClient = window.supabase || supabase; 
@@ -133,23 +149,34 @@ async function restoreName(){
     }
 }
 
-
-// すべてのスクリプトが読み終わった後に初期化を実行
+// すべての初期化を一つの流れにまとめる
 window.addEventListener('load', async () => {
-    if (initSupabase()) {
-        console.log("Supabase Ready");
+    try {
+        // 1. Supabaseの本体が見つかるまで待つ
+        const supabaseLib = await waitForSupabase();
 
-        // auth監視
+        const SUPABASE_URL = "https://jysjolovimtyvimkhfpd.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5c2pvbG92aW10eXZpbWtoZnBkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3MDA5MzQsImV4cCI6MjA4NjI3NjkzNH0.YDrF0H_mq99R5LIhcFVe4EAc-Z0ZwyB-WUH9XwdqDTo";
+
+        // 2. クライアント作成
+        window.sb = supabaseLib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        sb = window.sb;
+        
+        console.log("✅ Supabase Ready!");
+
+        // 3. auth監視の設定
         sb.auth.onAuthStateChange((event, session) => {
-            updateStartButton();
-            updateLoginUI();
+            if (typeof updateStartButton === 'function') updateStartButton();
+            if (typeof updateLoginUI === 'function') updateLoginUI();
         });
 
-        // 初期状態の確認
+        // 4. その他の初期化関数を順番に実行
         await checkLogin();
         await updateStartButton();
         await updateLoginUI();
-        await restoreName();    
+        await restoreName();
+
+    } catch (e) {
+        console.error("🚫 初期化中にエラーが発生:", e);
     }
 });
-
