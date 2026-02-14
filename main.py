@@ -73,10 +73,24 @@ async def calc_area(data: dict): # ブラウザから送られてきたjsonデ�
 
     now = datetime.datetime.now().isoformat() # 現在日時をISO形式で取得
 
-    cur.execute(
-        "INSERT INTO ranking (username, area, created_at) VALUES (%s, %s, %s)", 
-        (name, area, now)
+    cur.execute("""
+        INSERT INTO ranking (username, area, created_at) 
+        VALUES (%s, %s, %s)
+        ON CONFLICT (username)
+        DO UPDATE SET
+                area = EXCLUDED.area,
+                created_at = EXCLUDED.created_at
+        """,(name, area, now)
         ) #rankingテーブルに、username, area, created_atデータを挿入
+    
+    cur.execute("""
+        DELETE FROM ranking
+        WHERE id IN (
+                SELECT id FROM ranking
+                ORDER BY area ASC
+                OFFSET 100
+        )
+        """) #面積順に並べ、面積100位以下は排除
     conn.commit()
     cur.close()
     conn.close()
