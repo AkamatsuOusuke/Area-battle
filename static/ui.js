@@ -1,5 +1,10 @@
 // タイトル画面
 async function startGame(){
+// 【追加】sbがまだ準備できていなければ、少し待つか警告を出す
+if (!sb) {
+    alert("接続準備中です。数秒待ってからもう一度押してください。");
+    return;
+}
 
 const { data } = await sb.auth.getUser();
 const user = data.user;
@@ -50,6 +55,11 @@ startGPS();
 async function sendArea() {
 if (points.length < 3) {
     alert("3点以上必要です。");
+    return;
+}
+
+if (!sb) {
+    alert("接続準備中です。");
     return;
 }
 
@@ -272,11 +282,3 @@ if (document.hidden) {
 }
 });
 
-// まとめる
-window.addEventListener("load", ()=>{
-    checkLogin();
-    updateStartButton();
-    updateLoginUI();
-    restoreName();
-    loadRanking();
-});
