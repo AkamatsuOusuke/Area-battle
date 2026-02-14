@@ -103,6 +103,13 @@
         transform: scale(0.94);
       }
 
+      button:disabled {
+          background: #555 !important; /* グレーにする */
+          cursor: not-allowed;         /* カーソルを禁止マークにする */
+          box-shadow: none !important; /* 光るエフェクトを消す */
+          transform: none !important;  /* 押した時の凹みをなくす */
+      }
+
       /* ===== スコアボード ===== */
       .ranking-board {
         background: #020617;
@@ -158,9 +165,9 @@
 
     <button id="startGameBtn" class="title-btn" onclick="startGame()" style="line-height: 1.2;">GPS開始<br><span style="font-size: 0.7em;">（ゲストログイン）</span></button>
 
-    <button class="title-btn" onclick="signUp()">新規登録</button>
-
     <button class="title-btn" onclick="signIn()">ログイン</button>
+
+    <button class="title-btn" onclick="signUp()">新規登録</button>
 
     <button id="installBtn" style="
     display:none;

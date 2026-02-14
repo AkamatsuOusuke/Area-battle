@@ -44,6 +44,11 @@ async function signUp(){
     return;
     }
 
+    // ボタンを無効化する
+    const btn = event.target; // クリックされたボタンを取得
+    btn.disabled = true;
+    btn.textContent = "登録中...";
+
     const { data, error } = await sb.auth.signUp({
     email: email,
     password: password,
@@ -53,6 +58,8 @@ async function signUp(){
     alert("登録エラー: " + error.message);
     } else {
     alert("登録成功！メールを確認してください");
+    // 成功時、メール認証待ちになるので「確認待ち」の状態にする
+    btn.textContent = "メール確認待ち";
     }
 }
 
@@ -66,6 +73,11 @@ async function signIn(){
         alert("メールアドレスとパスワードは必須です");
         return;
     }
+
+    // ボタンを無効化
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = "ログイン中...";
 
     const { data, error } = await sb.auth.signInWithPassword({
         email: email,
