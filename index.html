@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#00fff7"><!--スプラッシュ-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><!-- スマホ対応 -->
     <title>エリアバトル</title>
-    <script  src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script> <!--supabaseクライアントをセットアップ。defer:JSはHTML読み終わってから実行してね-->
+    <script  src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> <!--supabaseクライアントをセットアップ。defer:JSはHTML読み終わってから実行してね-->
     <script  src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
     <link
@@ -202,7 +202,11 @@
 
     <script>
     if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/static/sw.js");
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register("/static/sw.js")
+                .then(reg => console.log("SW registered"))
+                .catch(err => console.log("SW error", err));
+        });
     }
     </script>
 
