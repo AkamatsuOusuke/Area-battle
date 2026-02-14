@@ -191,6 +191,7 @@ window.addEventListener('load', async () => {
         await updateStartButton();
         await updateLoginUI();
         await restoreName();
+        await loadRanking();
 
     } catch (e) {
         console.error("🚫 初期化中にエラーが発生:", e);
