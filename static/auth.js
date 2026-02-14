@@ -105,9 +105,9 @@ async function updateStartButton(){
     if(!btn) return;
 
     if(user){
-        btn.textContent = "GPS開始" ;
+        btn.innerHTML = "GPS開始" ;
     } else {
-        btn.textContent = "GPS開始（ゲストログイン）";
+        btn.innerHTML = "GPS開始<br><span style='font-size: 0.7em;'>（ゲストログイン）</span>";
     }
 }
 

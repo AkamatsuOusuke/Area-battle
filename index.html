@@ -153,9 +153,10 @@
     10px;border:none;
     text-align:center;
     font-size:16px;"
+
     >
 
-    <button id="startGameBtn" class="title-btn" onclick="startGame()">GPS開始（ゲストログイン）</button>
+    <button id="startGameBtn" class="title-btn" onclick="startGame()" style="line-height: 1.2;">GPS開始<br><span style="font-size: 0.7em;">（ゲストログイン）</span></button>
 
     <button class="title-btn" onclick="signUp()">新規登録</button>
 
@@ -182,7 +183,16 @@
       <div class="hud">
         <!--hud:ゲームの上部情報欄-->
         <div id="result">面積: 0</div>
-        <input id="username" class="playerNameInput" type="text" placeholder="PLAYER NAME" style="text-align:center;"/>
+        <input id="username" class="playerNameInput" type="text" placeholder="PLAYER NAME" style="
+        text-align:center;
+        display: block;
+        margin: 10px auto; 
+        width: 80%; 
+        border: none; 
+        background: rgba(255,255,255,0.1); 
+        color: white; 
+        border-radius: 8px; 
+        padding: 5px;"/>
       </div>
       <div id="map" style="height: 500px"></div>
       <div class="action-buttons">
