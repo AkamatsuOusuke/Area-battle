@@ -13,8 +13,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="manifest" href="/static/manifest.json"><!--アプリ設定(manifest.js)-->
     <script defer src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script> <!--supabaseクライアントをセットアップ。defer:JSはHTML読み終わってから実行してね-->
-    <!--👆このdeferが無いと、supabaseが未ロードの状態でcreateClientを実行してしまい、undefinedで以降のjsがすべて死んでしまう-->
+    <script  src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script> <!--supabaseクライアントをセットアップ。defer:JSはHTML読み終わってから実行してね-->
 
     <style>
       body {
