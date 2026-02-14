@@ -450,7 +450,7 @@
           }
 
         } else {
-          //　ゲストログイン時はtitlename
+          //　ゲストログイン時はtitlenameが非表示になるので、入力欄(username)も見るようにする。
           name = document.getElementById("titlename").value || document.getElementById("username").value;
 
           if (!name) {

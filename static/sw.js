@@ -1,4 +1,4 @@
-const CACHE_NAME = "area-battle-v1"; // キャッシュ名
+const CACHE_NAME = "area-battle-v2"; // キャッシュ名
 const urlsToCache = [
   "/",
   "/index.html",
