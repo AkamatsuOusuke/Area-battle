@@ -40,23 +40,24 @@ async function signUp(){
     const password = prompt("パスワードを入力");
 
     if (!email || !password) {
-    alert("メールアドレスとパスワードは必須です");
-    return;
+        alert("メールアドレスとパスワードは必須です");
+        return;
     }
 
     // ボタンを無効化する
     const btn = event.target; // クリックされたボタンを取得
     btn.disabled = true;
+    const originalText = btn.textContent; // 元のテキストを覚えておく
     btn.textContent = "登録中...";
 
     const { data, error } = await sb.auth.signUp({
-    email: email,
-    password: password,
+        email: email,
+        password: password,
     });// メールアドレスとパスワードをsupabaseに登録
 
     if (error) {
     alert("登録エラー: " + error.message);
-    btn.disabled = false;
+    btn.disabled = false; // ボタン復活
     btn.textContent = originalText;
     } else {
     alert("登録成功！メールを確認してください");
@@ -79,6 +80,7 @@ async function signIn(){
     // ボタンを無効化
     const btn = event.target;
     btn.disabled = true;
+    const originalText = btn.textContent;
     btn.textContent = "ログイン中...";
 
     const { data, error } = await sb.auth.signInWithPassword({
@@ -92,7 +94,8 @@ async function signIn(){
         btn.textContent = originalText;
     } else {
         alert("ログイン成功！ようこそ " + data.user.email);
-        document.getElementById("username").value = data.user.email; // HUDにコピー
+        // document.getElementById("username").value = data.user.email; // HUDにコピー
+        await updateLoginUI(); //表示を切り替える
         document.getElementById("titleScreen").style.display = "none"; // タイトル画面消す
         startGPS();
     }
@@ -102,11 +105,12 @@ async function signIn(){
 // ページ読み込み時にログイン状態確認
 async function checkLogin() {
     const { data } = await sb.auth.getSession();
-    if (data.session) {
     // すでにログイン済み
-    document.getElementById("username").value = data.session.user.email;
+    if (data.session) {
+    // document.getElementById("username").value = data.session.user.email;
+    await updateLoginUI();
     document.getElementById("titleScreen").style.display = "none";
-    startGPS();// map.js
+    startGPS();
     }
 }// ページをリロードしてもログイン状態を確認
 
@@ -132,14 +136,18 @@ async function updateStartButton(){
 async function updateLoginUI(){
     const { data } = await sb.auth.getUser();
     const user = data.user;
-
-    // 
-    const inputs = document.querySelectorAll(".playerNameInput");
+    const displayNameDiv = document.getElementById("display-name");
+    const usernameInput = document.getElementById("username");
 
     if(user){
-        inputs.forEach(el => el.style.display = "none");
+        // ログイン時：メールアドレスを表示して入力欄を隠す
+        displayNameDiv.textContent = "PLAYER: " + user.email;
+        displayNameDiv.style.display = "block";
+        usernameInput.style.display = "none";
     } else {
-        inputs.forEach(el => el.style.display = "block");
+        // 未ログイン時：入力欄を表示して名前を消す
+        displayNameDiv.style.display = "none";
+        usernameInput.style.display = "block";
     }
 }
 
