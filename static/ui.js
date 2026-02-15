@@ -6,43 +6,29 @@ if (!sb) {
     return;
 }
 
+let name = document.getElementById("titlename").value;
+
+if (!name) {
+    alert("PLAYER NAMEを入力してね");
+    return;
+}
+
+// ログインしてるか確認
 const { data } = await sb.auth.getUser();
 const user = data.user;
 
-let name;
-
-// ユーザー名取得(ログイン時はemailがユーザ名に)
 if(user){
-
-    // display_name優先。supabaseのuser_metadataを使う
-    name = user.user_metadata?.display_name;
-
-    // 無ければ入力させる
-    if(!name){
-    name = prompt("表示名を入力してね");
-    if(!name) return;
-
-    // supabaseに保存
+    // ログイン中はsupabaseにdisplay_name保存
     await sb.auth.updateUser({
         data:{ display_name:name }
     });
-    }
-
 } else {
-    //　ゲストログイン時はtitlenameが非表示になるので、入力欄(username)も見るようにする。
-    name = document.getElementById("titlename").value || document.getElementById("username").value;
-
-    if (!name) {
-    alert("PLAYER NAMEを入力してね");
-    return;
-    }
-
-    // ゲストはLocalStorage保存
+    //　ゲストログイン時はLocalStorageに保存
     localStorage.setItem("guest_name", name);
 }
 
 // HUDの名前欄にコピー
-document.getElementById("username").value = name;
+document.getElementById("display_name").value = name;
 
 // タイトル画面消す
 document.getElementById("titleScreen").style.display = "none";
@@ -94,8 +80,7 @@ if (first[0] !== last[0] || first[1] !== last[1]) {
     sendPoints.push(first); // 始点と終点が一致していなければ、ここで最初の点を最後に追加
 }
 
-// ユーザー名取得
-let name = document.getElementById("username").value;
+let name = document.getElementById("display_name").textContent.replace("PLAYER: ", "");// タイトル「PLAYER: 」を除去して名前だけにする
 if (!name) {
     alert("PLAYER NAMEを入力してね");
     return;

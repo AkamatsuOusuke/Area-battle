@@ -140,9 +140,9 @@ async function logout(){
 async function updateLoginUI(){
     const { data } = await sb.auth.getUser();
     const user = data.user;
-    const btn = document.betElementById("stargtGameBtn") = document.getElementById("startGameBtn");
+    const btn = document.getElementById("startGameBtn");
     const displayNameDiv = document.getElementById("display-name");
-    const usernameInput = document.getElementById("username");
+
 
     // スタートボタン更新（前のupdateStartButton)
     if (btn) {
@@ -152,18 +152,16 @@ async function updateLoginUI(){
     }
 
     if(user){
-        // ログイン時：メールアドレスを表示して入力欄を隠す&ログアウトボタン表示
-        displayNameDiv.textContent = "PLAYER: " + user.email;
-        displayNameDiv.style.display = "block";
-        usernameInput.style.display = "none";
+        // ログイン中：ログアウトボタン表示
+        console.log("ログイン中のユーザ:", user);
         document.getElementById("logoutBtn").style.display = "block";
     } else {
-        // 未ログイン時：入力欄を表示して名前を消す&ログアウトボタン非表示
-        displayNameDiv.style.display = "none";
-        usernameInput.style.display = "block";
+        // 未ログイン時：ログアウトボタン非表示
+        console.log("未ログイン状態");
         document.getElementById("logoutBtn").style.display = "none";
     }
 }
+
 
 // 前回の名前保存
 async function restoreName(){
@@ -173,16 +171,14 @@ async function restoreName(){
 
     if(user){
         const name = user.user_metadata?.display_name;
-
         if(name){
-        document.getElementById("username").value = name;
+            document.getElementById("titlename").value = name;
         }
     } else {
         const guest = localStorage.getItem("guest_name");
 
         if(guest){
-        document.getElementById("titlename").value = guest;
-        document.getElementById("username").value = guest;
+            document.getElementById("titlename").value = guest;
         }
     }
 }
