@@ -117,30 +117,20 @@ async function checkLogin() {
     }
 }// ページをリロードしてもログイン状態を確認
 
-
-// GPS開始(ゲストログイン)とGPS開始の切り替え
-async function updateStartButton(){
-    const { data } = await sb.auth.getUser();
-    const user = data.user;
-
-    const btn = document.getElementById("startGameBtn");
-
-    if(!btn) return;
-
-    if(user){
-        btn.innerHTML = "GPS開始" ;
-    } else {
-        btn.innerHTML = "GPS開始<br><span style='font-size: 0.7em;'>（ゲストログイン）</span>";
-    }
-}
-
-
 // ログイン時のUI切り替え
 async function updateLoginUI(){
     const { data } = await sb.auth.getUser();
     const user = data.user;
+    const btn = document.betElementById("stargtGameBtn") = document.getElementById("startGameBtn");
     const displayNameDiv = document.getElementById("display-name");
     const usernameInput = document.getElementById("username");
+
+    // スタートボタン更新（前のupdateStartButton)
+    if (btn) {
+        btn.innerHTML = user 
+            ? "GPS開始" 
+            : "GPS開始<br><span style='font-size: 0.7em;'>（ゲストログイン）</span>";
+    }
 
     if(user){
         // ログイン時：メールアドレスを表示して入力欄を隠す
@@ -179,26 +169,25 @@ async function restoreName(){
 // すべての初期化を一つの流れにまとめる
 window.addEventListener('load', async () => {
     try {
-        // 1. Supabaseの本体が見つかるまで待つ
+        // Supabaseの本体が見つかるまで待つ
         const supabaseLib = await waitForSupabase();
 
         const SUPABASE_URL = "https://jysjolovimtyvimkhfpd.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5c2pvbG92aW10eXZpbWtoZnBkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3MDA5MzQsImV4cCI6MjA4NjI3NjkzNH0.YDrF0H_mq99R5LIhcFVe4EAc-Z0ZwyB-WUH9XwdqDTo";
 
-        // 2. クライアント作成
+        // クライアント作成
         window.sb = supabaseLib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         sb = window.sb;
         console.log("✅ Supabase Ready!");
 
         await checkLogin();
-        await updateStartButton();
         await updateLoginUI();
         await restoreName();
         await loadRanking();
 
+        // 監視役👀
         sb.auth.onAuthStateChange((event, session) => {
             console.log("🔐 Auth状態変化:", event);
-            if (typeof updateStartButton === 'function') updateStartButton();
             if (typeof updateLoginUI === 'function') updateLoginUI();
         });
 
