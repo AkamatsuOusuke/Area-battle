@@ -170,7 +170,7 @@ async function restoreName(){
     const user = data.user;
 
     if(user){
-        const name = user.user_metadata?.display_name;
+        const name = user.user_metadata?.display-name;
         if(name){
             document.getElementById("titlename").value = name;
         }

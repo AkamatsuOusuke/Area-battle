@@ -16,19 +16,18 @@ if (!name) {
 // ログインしてるか確認
 const { data } = await sb.auth.getUser();
 const user = data.user;
-
 if(user){
-    // ログイン中はsupabaseにdisplay_name保存
+    // ログイン中はsupabaseにdisplay-name保存
     await sb.auth.updateUser({
-        data:{ display_name:name }
+        data:{ "display-name":name }
     });
 } else {
     //　ゲストログイン時はLocalStorageに保存
     localStorage.setItem("guest_name", name);
 }
 
-// HUDの名前欄にコピー
-document.getElementById("display_name").value = name;
+// HUDにコピー。dispaly-nameはログイン状態に関わらず表示する。（<div>なのでvalueは使えない）
+document.getElementById("display-name").textContent = "PLAYER: " + name;
 
 // タイトル画面消す
 document.getElementById("titleScreen").style.display = "none";
@@ -80,7 +79,7 @@ if (first[0] !== last[0] || first[1] !== last[1]) {
     sendPoints.push(first); // 始点と終点が一致していなければ、ここで最初の点を最後に追加
 }
 
-let name = document.getElementById("display_name").textContent.replace("PLAYER: ", "");// タイトル「PLAYER: 」を除去して名前だけにする
+let name = document.getElementById("display-name").textContent.replace("PLAYER: ", "");// タイトル「PLAYER: 」を除去して名前だけにする
 if (!name) {
     alert("PLAYER NAMEを入力してね");
     return;
