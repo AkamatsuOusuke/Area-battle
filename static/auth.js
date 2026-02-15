@@ -121,6 +121,10 @@ async function checkLogin() {
 // ログアウト
 async function logout(){
     if(!sb) return;
+    if(watchId !== null){
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+    }
 
     await sb.auth.signOut();
 

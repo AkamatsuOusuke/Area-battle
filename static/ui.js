@@ -95,14 +95,20 @@ if(data.user){
 const { data: userData } = await sb.auth.getUser();
 const user = userData.user;
 
+let bodyData = {
+    coords: sendPoints,
+    name: name,
+};
+
+if(user){
+    bodyData.user_id = user.id; // ログインしてる場合はuser_idも送る
+}
+
 let res = await fetch("https://area-battle.onrender.com/area", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-    coords: sendPoints,
-    name: name,
-    user_id: user ? user.id : null
-    }), // 座標・名前データ送信(JS → JSON → Python)
+    body: JSON.stringify(bodyData
+    ), // 座標・名前データ送信(JS → JSON → Python)
 });
 
 let result = await res.json(); //　面積データ受信(Python → JSON → JS)
