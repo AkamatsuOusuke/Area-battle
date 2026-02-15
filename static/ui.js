@@ -102,7 +102,7 @@ async function sendArea() {
     };
 
     if(user){
-        bodyData.user_id = user.id; // ログインしてる場合はuser_idも送る
+        bodyData.user_id = user.id; // ログインしてる場合はuser_idも送る  👈使えそう
     }
 
     let res = await fetch("https://area-battle.onrender.com/area", {
@@ -265,7 +265,7 @@ async function loadRanking() {
         else if (rank == 2) crown = "🥈";
         else if (rank == 3) crown = "🥉";
 
-        let isMe = (r.username === myName);
+        let isMe = (r.username === myName) && playedThisSession;
         // 自分なら記録保存
         if (isMe && myRank === null) {
             myRank = rank;
