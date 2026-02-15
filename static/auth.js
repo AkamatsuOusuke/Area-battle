@@ -197,6 +197,7 @@ window.addEventListener('load', async () => {
         await loadRanking();
 
         sb.auth.onAuthStateChange((event, session) => {
+            console.log("🔐 Auth状態変化:", event);
             if (typeof updateStartButton === 'function') updateStartButton();
             if (typeof updateLoginUI === 'function') updateLoginUI();
         });
