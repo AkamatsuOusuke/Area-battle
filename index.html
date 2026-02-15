@@ -156,6 +156,18 @@
         box-shadow: 0 0 15px #22d3ee;
         background: rgba(34, 211, 238, 0.1);
       }
+
+      #myRankBox {
+        border: 2px solid #22d3ee;
+        box-shadow: 0 0 20px #22d3ee;
+      }
+
+      #myRank {
+        font-size: 18px;
+        font-weight: bold;
+        color: #22d3ee;
+      }
+      
     </style>
   </head>
 
@@ -224,7 +236,12 @@
         <button onclick="resetMap()">地図リセット</button>
       </div>
 
-      <div class="card ranking-board">
+      <div id="myRankBox" class="ranking-board" style="margin-bottom:10px; display:none;">
+        <h3>⭐ YOUR RANK</h3>
+        <div id="myRank"></div>
+      </div>
+
+      <div class="ranking-board">
         <h3>🏆 SCORE BOARD</h3>
         <div id="ranking"></div>
       </div>

@@ -253,6 +253,10 @@ async function loadRanking() {
     let text = "";
     let rank = 1;
 
+    let myRank = null;   
+    let myArea = null;  
+
+
     for (let r of data) {
         let crown = ""
         if (rank == 1) crown = "🥇";
@@ -260,6 +264,11 @@ async function loadRanking() {
         else if (rank == 3) crown = "🥉";
 
         let isMe = (r.username === myName);
+        // 自分なら記録保存
+        if (isMe && myRank === null) {
+            myRank = rank;
+            myArea = r.area;
+        }
 
         // r = { username: "ユーザ名", area: 面積の数値 }
         text += 
@@ -269,6 +278,13 @@ async function loadRanking() {
         rank++;
     }
     document.getElementById("ranking").innerHTML = text;
+
+    if(myRank !== null){
+        document.getElementById("myRank").innerHTML = `あなたは${myRank}位です！<br>面積: ${myArea} m²`;
+        document.getElementById("myRankBox").style.display = "block";
+    } else {
+        document.getElementById("myRankBox").style.display = "none";
+    }
 }
 
 
