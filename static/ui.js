@@ -240,24 +240,32 @@ async function loadRanking() {
     let res = await fetch("https://area-battle.onrender.com/ranking");
     let data = await res.json();
 
+    // 今の自分の名前を取得
+    let myName;
+    const { data: userData } = await sb.auth.getUser();
+
+    if(userData.user){
+        myName = userData.user.user_metadata["display-name"];
+    } else {
+        myName = localStorage.getItem("guest_name");
+    }
+
     let text = "";
     let rank = 1;
 
     for (let r of data) {
         let crown = ""
+        if (rank == 1) crown = "🥇";
+        else if (rank == 2) crown = "🥈";
+        else if (rank == 3) crown = "🥉";
 
-        if (rank == 1) {
-        crown = "🥇";
-        } else if (rank == 2) {
-        crown = "🥈";
-        } else if (rank == 3) {
-        crown = "🥉";
-        } else {
-        crown = "";
-        }
+        let isMe = (r.username === myName);
 
         // r = { username: "ユーザ名", area: 面積の数値 }
-        text += crown + rank + "位 " + r.username + " : " + r.area + "<br>";
+        text += 
+            `<div class="rank-item ${isMe ? "my-rank" : ""}">` +
+            `${crown}${rank}位 ${r.username}: ${r.area} m²` +
+            `</div>`;   
         rank++;
     }
     document.getElementById("ranking").innerHTML = text;
