@@ -83,8 +83,16 @@
         flex-direction: column;
         gap: 10px;
         width: 100%;
+        align-items: center; /* ボタンを中央揃え */
       }
 
+      /* 操作ボタンの横幅を広げる */
+      .action-buttons button {
+        width: 400px; 
+        text-align: center;
+      }
+
+      /* 操作ボタンのスタイル */
       button {
         width: 100%;
         box-sizing: border-box;
@@ -131,6 +139,7 @@
 
       /* ===== スコアボード ===== */
       .ranking-board {
+        margin-top: 20px;
         background: #020617;
         border-radius: 16px;
         padding: 14px;
@@ -230,10 +239,12 @@
         <button id="logoutBtn" onclick="logout()">ログアウト</button>
 
       </div>
+
       <div id="map" style="height: 500px"></div>
+
       <div class="action-buttons">
-        <button onclick="sendArea()">面積計算</button>
-        <button onclick="resetMap()">地図リセット</button>
+        <button class="title-btn" onclick="sendArea()">面積計算</button>
+        <button class="title-btn" onclick="resetMap()">地図リセット</button>
       </div>
 
       <div id="myRankBox" class="ranking-board" style="margin-bottom:10px; display:none;">
