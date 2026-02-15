@@ -137,30 +137,30 @@ loadRanking(); // ランキング更新
 // 地図リセット用
 function resetMap() {
 
-// 座標リストを空に
-points = [];
-lastLat = null;
-lastLng = null;
-firstMove = true;
-// 線を削除
-polyline.setLatLngs([]);
+    // 座標リストを空に
+    points = [];
+    lastLat = null;
+    lastLng = null;
+    firstMove = true;
+    // 線を削除
+    polyline.setLatLngs([]);
 
-// 円を削除
-for(let c of circles){
-    map.removeLayer(c);
-}
-circles = [];
-// 点線を削除
-if (closeline) {
-    map.removeLayer(closeline);
-    closeline = null;
-}
-// 多角形を削除
-if (polygonLayer) {
-    map.removeLayer(polygonLayer);
-}
-// 結果表示をクリア
-document.getElementById("result").innerText = "";
+    // 円を削除
+    for(let c of circles){
+        map.removeLayer(c);
+    }
+    circles = [];
+    // 点線を削除
+    if (closeline) {
+        map.removeLayer(closeline);
+        closeline = null;
+    }
+    // 多角形を削除
+    if (polygonLayer) {
+        map.removeLayer(polygonLayer);
+    }
+    // 結果表示をクリア
+    document.getElementById("result").innerText = "";
 }
 
 // GPS関連

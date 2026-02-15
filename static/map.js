@@ -83,5 +83,5 @@ let lastLng = null;
 
 // 簡易距離計算（※緯度経度の差の大きさ）
 function distance(a, b, c, d) {
-return Math.sqrt((a - c) ** 2 + (b - d) ** 2);
+    return Math.sqrt((a - c) ** 2 + (b - d) ** 2);
 }

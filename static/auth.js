@@ -110,7 +110,6 @@ async function checkLogin() {
     // document.getElementById("username").value = data.session.user.email;
     await updateLoginUI();
     document.getElementById("titleScreen").style.display = "none";
-    startGPS();
     }
 }// ページをリロードしてもログイン状態を確認
 
