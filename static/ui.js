@@ -241,29 +241,29 @@ watchId = navigator.geolocation.watchPosition(
 
 // ランキング更新用
 async function loadRanking() {
-let res = await fetch("https://area-battle.onrender.com/ranking");
-let data = await res.json();
+    let res = await fetch("https://area-battle.onrender.com/ranking");
+    let data = await res.json();
 
-let text = "";
-let rank = 1;
+    let text = "";
+    let rank = 1;
 
-for (let r of data) {
-    let crown = ""
+    for (let r of data) {
+        let crown = ""
 
-    if (rank == 1) {
-    crown = "🥇";
-    } else if (rank == 2) {
-    crown = "🥈";
-    } else if (rank == 3) {
-    crown = "🥉";
-    } else {
-    crown = "";
+        if (rank == 1) {
+        crown = "🥇";
+        } else if (rank == 2) {
+        crown = "🥈";
+        } else if (rank == 3) {
+        crown = "🥉";
+        } else {
+        crown = "";
+        }
+
+        text += crown + rank + "位 " + r.display_name + " : " + r.area + "<br>";
+        rank++;
     }
-
-    text += crown + rank + "位 " + r.display_name + " : " + r.area + "<br>";
-    rank++;
-}
-document.getElementById("ranking").innerHTML = text;
+    document.getElementById("ranking").innerHTML = text;
 }
 
 

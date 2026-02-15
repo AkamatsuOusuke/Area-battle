@@ -1,10 +1,12 @@
-const CACHE_NAME = "area-battle-v1"; // キャッシュ名
+const CACHE_NAME = "area-battle-v2"; // キャッシュ名
 const urlsToCache = [
   "/",
   "/index.html",
   "/static/icon.png",
   "/static/style.css",
-  "/static/main.js",
+  "/static/auth.js",
+  "/static/map.js",
+  "/static/ui.js",
   "/static/Player.png",
   "/static/manifest.json"
 ];
