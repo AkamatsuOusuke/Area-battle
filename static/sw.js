@@ -1,9 +1,7 @@
 const CACHE_NAME = "area-battle-v2"; // キャッシュ名
 const urlsToCache = [
   "/",
-  "/index.html",
   "/static/icon.png",
-  "/static/style.css",
   "/static/auth.js",
   "/static/map.js",
   "/static/ui.js",
