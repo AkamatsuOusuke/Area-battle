@@ -260,7 +260,8 @@ async function loadRanking() {
         crown = "";
         }
 
-        text += crown + rank + "位 " + r.display_name + " : " + r.area + "<br>";
+        // r = { username: "ユーザ名", area: 面積の数値 }
+        text += crown + rank + "位 " + r.username + " : " + r.area + "<br>";
         rank++;
     }
     document.getElementById("ranking").innerHTML = text;
