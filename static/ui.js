@@ -245,9 +245,9 @@ async function loadRanking() {
     const { data: userData } = await sb.auth.getUser();
 
     if(userData.user){
-        myName = userData.user.user_metadata["display-name"];
+        myName = userData.user.user_metadata["display-name"]|| userData.user.email;  // fallback;
     } else {
-        myName = localStorage.getItem("guest_name");
+        myName = localStorage.getItem("guest_name") || "匿名さん";
     }
 
     let text = "";
