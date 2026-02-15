@@ -110,6 +110,25 @@
           transform: none !important;  /* 押した時の凹みをなくす */
       }
 
+      #logoutBtn{
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          padding: 6px 12px;
+          font-size: 12px;
+          background: black;
+          color: #00fff7;
+          border: 1px solid #00fff7;
+          border-radius: 6px;
+          cursor: pointer;
+      }
+
+      /* ログアウトボタンのホバーエフェクト */
+      #logoutBtn:hover {
+          background: #ef4444;
+          box-shadow: 0 0 12px rgba(239,68,68,0.6);
+      }
+
       /* ===== スコアボード ===== */
       .ranking-board {
         background: #020617;
@@ -188,16 +207,9 @@
     <div class="container">
     <!--hud:ゲームの上部情報欄-->
       <div class="hud">
+        <div id="display-name" style="font-size:16px; color:#22d3ee; margin-top:5px; font-weight:bold;"></div>
         <div id="result">面積: 0</div>
-
-        <div id="display-name" style="display:none; font-size:16px; color:#22d3ee; margin-top:5px; font-weight:bold;"></div>
-        
-        <button id="logoutBtn" onclick="logput()" style="
-        display:none;
-        margin-top:8px;
-        background:#ef4444;
-        box-shadow: 0 0 12px rgba(239,68,68,0.4);
-        ">ログアウト</button>
+        <button id="logoutBtn" onclick="logout()">ログアウト</button>
 
       </div>
       <div id="map" style="height: 500px"></div>
