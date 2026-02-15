@@ -78,8 +78,12 @@ async def calc_area(data: dict): # ブラウザから送られてきたjsonデ�
         VALUES (%s, %s, %s)
         ON CONFLICT (username)
         DO UPDATE SET
-                area = EXCLUDED.area,
-                created_at = EXCLUDED.created_at
+                area = GREATEST(ranking.area, EXCLUDED.area),
+                created_at = CASE
+                    WHEN EXCLUDED.area > ranking.area 
+                    THEN EXCLUDED.created_at
+                    ELSE ranking.created_at
+                END
         """,(name, area, now)
         ) #rankingテーブルに、username, area, created_atデータを挿入
     
