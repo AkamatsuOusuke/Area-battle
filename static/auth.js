@@ -188,21 +188,18 @@ window.addEventListener('load', async () => {
         // 2. クライアント作成
         window.sb = supabaseLib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         sb = window.sb;
-        
         console.log("✅ Supabase Ready!");
 
-        // 3. auth監視の設定
-        sb.auth.onAuthStateChange((event, session) => {
-            if (typeof updateStartButton === 'function') updateStartButton();
-            if (typeof updateLoginUI === 'function') updateLoginUI();
-        });
-
-        // 4. その他の初期化関数を順番に実行
         await checkLogin();
         await updateStartButton();
         await updateLoginUI();
         await restoreName();
         await loadRanking();
+
+        sb.auth.onAuthStateChange((event, session) => {
+            if (typeof updateStartButton === 'function') updateStartButton();
+            if (typeof updateLoginUI === 'function') updateLoginUI();
+        });
 
     } catch (e) {
         console.error("🚫 初期化中にエラーが発生:", e);
