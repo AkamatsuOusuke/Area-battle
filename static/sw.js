@@ -14,8 +14,16 @@ const urlsToCache = [
 // インストール時にキャッシュ
 self.addEventListener("install", e => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(urlsToCache);
+    caches.open(CACHE_NAME).then(async(cache) => {
+      console.log("キャッシュ開始...");
+      for (const url of urlsToCache) {
+        try {
+          await cache.add(url);
+          console.log(`✅ 成功: ${url}`);
+        } catch (err) {
+          console.error(`❌ 失敗: ${url}`, err);
+        }
+      }
     })
   );
   self.skipWaiting(); // 新しいSWをすぐ有効化
