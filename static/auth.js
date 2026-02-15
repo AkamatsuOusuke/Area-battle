@@ -117,6 +117,25 @@ async function checkLogin() {
     }
 }// ページをリロードしてもログイン状態を確認
 
+
+// ログアウト
+async function logout(){
+    if(!sb) return;
+
+    await sb.auth.signOut();
+
+    alert("ログアウトしました");
+
+    // UI更新
+    await updateLoginUI();
+
+    // タイトル画面に戻す
+    document.getElementById("titleScreen").style.display = "flex";
+
+    resetMap(); // 地図リセット
+}
+
+
 // ログイン時のUI切り替え
 async function updateLoginUI(){
     const { data } = await sb.auth.getUser();
@@ -133,14 +152,16 @@ async function updateLoginUI(){
     }
 
     if(user){
-        // ログイン時：メールアドレスを表示して入力欄を隠す
+        // ログイン時：メールアドレスを表示して入力欄を隠す&ログアウトボタン表示
         displayNameDiv.textContent = "PLAYER: " + user.email;
         displayNameDiv.style.display = "block";
         usernameInput.style.display = "none";
+        document.getElementById("logoutBtn").style.display = "block";
     } else {
-        // 未ログイン時：入力欄を表示して名前を消す
+        // 未ログイン時：入力欄を表示して名前を消す&ログアウトボタン非表示
         displayNameDiv.style.display = "none";
         usernameInput.style.display = "block";
+        document.getElementById("logoutBtn").style.display = "none";
     }
 }
 
