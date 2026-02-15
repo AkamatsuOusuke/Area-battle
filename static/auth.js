@@ -96,8 +96,12 @@ async function signIn(){
         alert("ログイン成功！ようこそ " + data.user.email);
         // document.getElementById("username").value = data.user.email; // HUDにコピー
         await updateLoginUI(); //表示を切り替える
-        document.getElementById("titleScreen").style.display = "none"; // タイトル画面消す
-        startGPS();
+        // document.getElementById("titleScreen").style.display = "none"; // タイトル画面消す
+        // startGPS();
+
+        // ボタンの表示だけ元に戻しておく（ログイン完了を示すため）
+        btn.disabled = false;
+        btn.textContent = "ログイン済み";
     }
 }
 
