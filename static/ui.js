@@ -79,10 +79,16 @@ if (first[0] !== last[0] || first[1] !== last[1]) {
     sendPoints.push(first); // 始点と終点が一致していなければ、ここで最初の点を最後に追加
 }
 
-let name = document.getElementById("display-name").textContent.replace("PLAYER: ", "");// タイトル「PLAYER: 」を除去して名前だけにする
-if (!name) {
-    alert("PLAYER NAMEを入力してね");
-    return;
+// 名前取得
+let name;
+
+const { data } = await sb.auth.getUser();
+if(data.user){
+    // ログイン中はsupabaseのdisplay-nameを優先
+    name = data.user.user_metadata["display-name"];
+} else {
+    // ゲストはLocalStorageから取得
+    name = localStorage.getItem("guest_name") || "名無し";
 }
 
 //　fetchで、サーバーにPOSTリクエストを送って面積を取得
