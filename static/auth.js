@@ -108,8 +108,8 @@ async function checkLogin() {
     // すでにログイン済み
     if (data.session) {
     // document.getElementById("username").value = data.session.user.email;
-    await updateLoginUI();
-    document.getElementById("titleScreen").style.display = "none";
+        await updateLoginUI();
+        // document.getElementById("titleScreen").style.display = "none"; タイトル削除
     }
 }// ページをリロードしてもログイン状態を確認
 
