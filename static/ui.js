@@ -1,3 +1,4 @@
+let playedThisSession = false; // 今のセッションで遊んだかどうか。ランキング更新の条件に使う
 // タイトル画面
 async function startGame(){
 // 【追加】sbがまだ準備できていなければ、少し待つか警告を出す
@@ -38,96 +39,97 @@ startGPS();
 
 // 面積計算用
 async function sendArea() {
-if (points.length < 3) {
-    alert("3点以上必要です。");
-    return;
-}
+    if (points.length < 3) {
+        alert("3点以上必要です。");
+        return;
+    }
 
-if (!sb) {
-    alert("接続準備中です。");
-    return;
-}
+    if (!sb) {
+        alert("接続準備中です。");
+        return;
+    }
 
-// 既存の点線削除
-if (closeline) {
-    map.removeLayer(closeline);
-    closeline = null;
-}
+    // 既存の点線削除
+    if (closeline) {
+        map.removeLayer(closeline);
+        closeline = null;
+    }
 
-// 始点終点を点線で結ぶ
-let start = points[0];
-let end = points[points.length - 1];
-closeline = L.polyline(
-    [
-    [start[1], start[0]],
-    [end[1], end[0]],
-    ],
-    {
-    dashArray: "8,8", // 点線
-    color: "#00fff7",
-    weight: 3,
-    },
-).addTo(map);
+    // 始点終点を点線で結ぶ
+    let start = points[0];
+    let end = points[points.length - 1];
+    closeline = L.polyline(
+        [
+        [start[1], start[0]],
+        [end[1], end[0]],
+        ],
+        {
+        dashArray: "8,8", // 点線
+        color: "#00fff7",
+        weight: 3,
+        },
+    ).addTo(map);
 
-// 最初の点を最後に追加して、多角形を閉じる
-let sendPoints = [...points]; // 配列のコピー
+    // 最初の点を最後に追加して、多角形を閉じる
+    let sendPoints = [...points]; // 配列のコピー
 
-let first = sendPoints[0];
-let last = sendPoints[sendPoints.length - 1];
+    let first = sendPoints[0];
+    let last = sendPoints[sendPoints.length - 1];
 
-if (first[0] !== last[0] || first[1] !== last[1]) {
-    sendPoints.push(first); // 始点と終点が一致していなければ、ここで最初の点を最後に追加
-}
+    if (first[0] !== last[0] || first[1] !== last[1]) {
+        sendPoints.push(first); // 始点と終点が一致していなければ、ここで最初の点を最後に追加
+    }
 
-// 名前取得
-let name;
+    // 名前取得
+    let name;
 
-const { data } = await sb.auth.getUser();
-if(data.user){
-    // ログイン中はsupabaseのdisplay-nameを優先
-    name = data.user.user_metadata["display-name"];
-} else {
-    // ゲストはLocalStorageから取得
-    name = localStorage.getItem("guest_name") || "名無し";
-}
+    const { data } = await sb.auth.getUser();
+    if(data.user){
+        // ログイン中はsupabaseのdisplay-nameを優先
+        name = data.user.user_metadata["display-name"];
+    } else {
+        // ゲストはLocalStorageから取得
+        name = localStorage.getItem("guest_name") || "名無し";
+    }
 
-//　fetchで、サーバーにPOSTリクエストを送って面積を取得
-const { data: userData } = await sb.auth.getUser();
-const user = userData.user;
+    //　fetchで、サーバーにPOSTリクエストを送って面積を取得
+    const { data: userData } = await sb.auth.getUser();
+    const user = userData.user;
 
-let bodyData = {
-    coords: sendPoints,
-    name: name,
-};
+    let bodyData = {
+        coords: sendPoints,
+        name: name,
+    };
 
-if(user){
-    bodyData.user_id = user.id; // ログインしてる場合はuser_idも送る
-}
+    if(user){
+        bodyData.user_id = user.id; // ログインしてる場合はuser_idも送る
+    }
 
-let res = await fetch("https://area-battle.onrender.com/area", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(bodyData
-    ), // 座標・名前データ送信(JS → JSON → Python)
-});
+    let res = await fetch("https://area-battle.onrender.com/area", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bodyData
+        ), // 座標・名前データ送信(JS → JSON → Python)
+    });
 
-let result = await res.json(); //　面積データ受信(Python → JSON → JS)
-// ↑ result = { "area": 面積の数値 } という構造で受け取れる
-document.getElementById("result").innerText = "面積: " + result.area;
+    let result = await res.json(); //　面積データ受信(Python → JSON → JS)
+    // ↑ result = { "area": 面積の数値 } という構造で受け取れる
+    document.getElementById("result").innerText = "面積: " + result.area;
 
-if (polygonLayer) {
-    map.removeLayer(polygonLayer); //既存の多角形を削除
-}
-polygonLayer = L.polygon(
-    points.map((p) => [p[1], p[0]]),
-    {
-    color: "#adff2f", // 線の色
-    fillColor: "#adff2f", // 塗りつぶしの色（黄緑色）
-    fillOpacity: 0.3,
-    },
-).addTo(map);
+    if (polygonLayer) {
+        map.removeLayer(polygonLayer); //既存の多角形を削除
+    }
+    polygonLayer = L.polygon(
+        points.map((p) => [p[1], p[0]]),
+        {
+        color: "#adff2f", // 線の色
+        fillColor: "#adff2f", // 塗りつぶしの色（黄緑色）
+        fillOpacity: 0.3,
+        },
+    ).addTo(map);
 
-loadRanking(); // ランキング更新
+    playedThisSession = true;
+    loadRanking(); // ランキング更新
 }
 
 // 地図リセット用
@@ -279,7 +281,7 @@ async function loadRanking() {
     }
     document.getElementById("ranking").innerHTML = text;
 
-    if(myRank !== null){
+    if(myRank !== null && playedThisSession){
         document.getElementById("myRank").innerHTML = `あなたは${myRank}位です！<br>面積: ${myArea} m²`;
         document.getElementById("myRankBox").style.display = "block";
     } else {
@@ -294,6 +296,7 @@ if (watchId !== null) {
     navigator.geolocation.clearWatch(watchId);
     watchId = null;
 }
+
 });
 
 // 画面が裏に回ったとき
