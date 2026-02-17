@@ -136,6 +136,8 @@ async function sendArea() {
             area: result.area
         }),
     });
+    console.log("insert status:", insertRes.status);
+    console.log("insert body:", await insertRes.text());
 
     if (polygonLayer) {
         map.removeLayer(polygonLayer); //既存の多角形を削除
