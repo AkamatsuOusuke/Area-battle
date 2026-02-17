@@ -124,7 +124,7 @@ async function sendArea() {
     document.getElementById("result").innerText = "面積: " + result.area;
 
     // Supabase Edge Functionにリクエストを送る。面積計算が終わったら、ランキングに結果を送信
-    await fetch(`${SUPABASE_FUNCTION_URL}/ranking-insert`, {
+    const insertRes = await fetch(`${SUPABASE_FUNCTION_URL}/ranking-insert`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -136,8 +136,10 @@ async function sendArea() {
             area: result.area
         }),
     });
+
+    const insertText = await insertRes.text();
     console.log("insert status:", insertRes.status);
-    console.log("insert body:", await insertRes.text());
+    console.log("insert body:", insertText);
 
     if (polygonLayer) {
         map.removeLayer(polygonLayer); //既存の多角形を削除
@@ -150,6 +152,11 @@ async function sendArea() {
         fillOpacity: 0.3,
         },
     ).addTo(map);
+
+    if (!insertRes.ok) {
+        alert("ランキング登録に失敗しました。Consoleを見てね");
+        return;
+    }
 
     playedThisSession = true;
     loadRanking(); // ランキング更新
