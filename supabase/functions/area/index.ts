@@ -1,8 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import area from "https://esm.sh/@turf/area@6.5.0"
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 serve(async (req) => {
@@ -14,38 +16,28 @@ serve(async (req) => {
   }
 
   const { coords } = await req.json()
-
-  function polygonArea(points: number[][]) {
-    let area = 0
-    for (let i = 0; i < points.length - 1; i++) {
-      area +=
-        points[i][0] * points[i + 1][1] -
-        points[i + 1][0] * points[i][1]
-    }
-    return Math.abs(area / 2)
+  if (!Array.isArray(coords) || coords.length < 4) {
+    return new Response(JSON.stringify({ error: "Invalid coords" }), {
+      status: 400,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    })
   }
 
-  const area = polygonArea(coords)
+  // coords は [lng, lat] の配列想定（あなたの points と同じ）
+  const poly = {
+    type: "Feature",
+    properties: {},
+    geometry: { type: "Polygon", coordinates: [coords] },
+  } as const
 
-  return new Response(
-    JSON.stringify({ area }),
-    {
-      headers: {
-        ...corsHeaders,
-        "Content-Type": "application/json",
-      },
-    }
-  )
+  const m2 = area(poly) // ← m²
+    return new Response(JSON.stringify({ area: m2 }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    })
   } catch (err) {
-    return new Response(
-      JSON.stringify({ error: err.message }),
-      { 
-        status: 500,
-        headers: {
-          ...corsHeaders,
-          "Content-Type": "application/json",
-        },
-      }
-    )
+    return new Response(JSON.stringify({ error: err?.message ?? String(err) }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    })
   }
 })
