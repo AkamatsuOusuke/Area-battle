@@ -1,4 +1,9 @@
 let playedThisSession = false; // 今のセッションで遊んだかどうか。ランキング更新の条件に使う
+
+const SUPABASE_FUNCTION_URL = "https://jysjolovimtyvimkhfpd.supabase.co/functions/v1";// Supabase Edge FunctionのURL
+
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5c2pvbG92aW10eXZpbWtoZnBkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3MDA5MzQsImV4cCI6MjA4NjI3NjkzNH0.YDrF0H_mq99R5LIhcFVe4EAc-Z0ZwyB-WUH9XwdqDTo"
+
 // タイトル画面
 async function startGame(){
 // 【追加】sbがまだ準備できていなければ、少し待つか警告を出す
@@ -96,25 +101,41 @@ async function sendArea() {
     const { data: userData } = await sb.auth.getUser();
     const user = userData.user;
 
-    let bodyData = {
-        coords: sendPoints,
-        name: name,
-    };
-
     if(user){
         bodyData.user_id = user.id; // ログインしてる場合はuser_idも送る  👈使えそう
     }
 
-    let res = await fetch("https://area-battle.onrender.com/area", {
+    // Supabase Edge Functionにリクエストを送る。面積計算のみなので、座標のみ送信
+    let res = await fetch(`${SUPABASE_FUNCTION_URL}/area`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(bodyData
-        ), // 座標・名前データ送信(JS → JSON → Python)
+        headers: { 
+            "Content-Type": "application/json",
+            "apikey": SUPABASE_KEY, // 公開用キーをヘッダーに含める
+            "Authorization": `Bearer ${SUPABASE_KEY}`,
+         },
+        body: JSON.stringify({
+            coords: sendPoints
+        }), // 座標データ送信(JS → JSON → Python)
     });
 
-    let result = await res.json(); //　面積データ受信(Python → JSON → JS)
+    //　面積データ受信(Python → JSON → JS)
+    let result = await res.json(); 
     // ↑ result = { "area": 面積の数値 } という構造で受け取れる
     document.getElementById("result").innerText = "面積: " + result.area;
+
+    // Supabase Edge Functionにリクエストを送る。面積計算が終わったら、ランキングに結果を送信
+    await fetch(`${SUPABASE_FUNCTION_URL}/ranking-insert`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "apikey": SUPABASE_KEY,
+            "Authorization": "Bearer " + SUPABASE_KEY
+        },
+        body: JSON.stringify({
+            username: name,
+            area: result.area
+        }),
+    });
 
     if (polygonLayer) {
         map.removeLayer(polygonLayer); //既存の多角形を削除
@@ -239,7 +260,12 @@ watchId = navigator.geolocation.watchPosition(
 
 // ランキング更新用
 async function loadRanking() {
-    let res = await fetch("https://area-battle.onrender.com/ranking");
+    let res = await fetch(`${SUPABASE_FUNCTION_URL}/ranking-list`,{
+        headers: {
+            "apikey": SUPABASE_KEY,
+            "Authorization": "Bearer " + SUPABASE_KEY
+        }
+    });
     let data = await res.json();
 
     // 今の自分の名前を取得
