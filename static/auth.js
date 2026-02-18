@@ -170,7 +170,7 @@ async function updateLoginUI(){
     if (btn) {
         btn.innerHTML = user 
             ? "GPS開始" 
-            : "GPS開始<br><span style='font-size: 0.7em;'>（ゲストログイン）</span>";
+            : "GPS開始<br><span style='font-size: 0.7em;'>※ランキング参加はログインが必要です</span>";
     }
 
     if(user){
