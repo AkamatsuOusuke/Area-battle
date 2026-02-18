@@ -52,6 +52,27 @@
           gap: 12px; /* ボタンや入力間の縦間隔を統一 */
       }
 
+      /* タイトル画面のロゴ余白 */
+      .title-logo {
+        margin: 0 0 8px 0;
+        line-height: 1;
+      }
+
+      /* メールログイン + 新規登録 を横並びにする箱 */
+      .title-row {
+        display: flex;
+        gap: 10px;
+        width: 260px;         /* title-btn と同じ幅 */
+      }
+
+      /* 横並び内のボタンは半分幅 */
+      .title-row .title-btn {
+        width: 100%;
+        padding: 14px 10px;   /* 少しだけコンパクトに */
+        font-size: 14px;
+        border-radius: 14px;
+      }
+
       .title-btn{
           padding: 16px 30px;
           font-size: 18px;
@@ -214,7 +235,7 @@
     z-index:9999;
     ">
 
-    <h1 style="font-size:40px;color:#22ee77;">AREA BATTLE</h1>
+    <h1  class="title-logo" style="font-size:40px;color:#22ee77;">AREA BATTLE</h1>
 
     <input id="titlename" class="playerNameInput" type="text" placeholder="PLAYER NAME"
     style="
@@ -226,9 +247,8 @@
     font-size:16px;"
     >
 
-    <button id="startGameBtn" class="title-btn" onclick="startGame()" style="line-height: 1.2;">GPS開始<br><span style="font-size: 0.7em;">（ゲストログイン）</span></button>
 
-    <button class="title-btn" onclick="signIn()"> ✉ メールでログイン</button>
+    <button id="startGameBtn" class="title-btn" onclick="startGame()" style="line-height: 1.2;">GPS開始<br><span style="font-size: 0.7em;">（ゲストログイン）</span></button>
 
     <button id="googleLoginBtn" class="title-btn">
       <span class="btn-content">
@@ -238,20 +258,23 @@
       </span>
     </button>
 
-    <button class="title-btn" onclick="signUp()">新規登録</button>
+    <div class="title-row">
+      <button class="title-btn" onclick="signIn()"> ✉ メールでログイン</button>
+      <button class="title-btn" onclick="signUp()">新規登録</button>
+    </div>
 
     <button id="installBtn" style="
-    display:none;
-    margin:10px auto;
-    padding:12px 24px;
-    font-size:16px;
-    border-radius:14px;
-    border:none;
-    background:linear-gradient(90deg,#ff9900,#ffcc33);
-    color:black;
-    font-weight:bold;
-    cursor:pointer;
-    width:250px
+      display:none;
+      margin:10px auto;
+      padding:12px 24px;
+      font-size:16px;
+      border-radius:14px;
+      border:none;
+      background:linear-gradient(90deg,#ff9900,#ffcc33);
+      color:black;
+      font-weight:bold;
+      cursor:pointer;
+      width:300px
     ">アプリをインストール</button>
 
     </div>
