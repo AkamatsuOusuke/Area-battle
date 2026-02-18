@@ -63,6 +63,12 @@
           white-space: nowrap;   /* 改行させない */
       }
 
+      .google-icon {
+          width: 20px;
+          height: 20px;
+          display: block;
+      }
+
       #result {
         font-size: 20px;
         color: #22d3ee;
@@ -219,8 +225,11 @@
     <button class="title-btn" onclick="signIn()"> ✉ メールでログイン</button>
 
     <button id="googleLoginBtn" class="title-btn">
-      <img src="https://developers.google.com/identity/images/g-logo.png" 
-       alt="Google" width="20" height="20">Googleでログイン
+      <span class="btn-content">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" 
+            alt="Google" class="google-icon">
+        <span>Googleでログイン</span>
+      </span>
     </button>
 
     <button class="title-btn" onclick="signUp()">新規登録</button>
