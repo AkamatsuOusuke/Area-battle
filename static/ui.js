@@ -165,7 +165,7 @@ async function sendArea() {
     ).addTo(map);
 
     if (!insertRes.ok) {
-        alert("ランキング登録に失敗しました。Consoleを見てね");
+        alert("ランキング登録に失敗しました。");
         return;
     }
 
