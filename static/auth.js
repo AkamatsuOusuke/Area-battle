@@ -105,6 +105,24 @@ async function signIn(){
     }
 }
 
+// Googleログイン
+async function loginWithGoogle() {
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      // 省略OK（Supabase側のSite URLが正しければ戻ってくる）
+      // redirectTo: window.location.origin
+    }
+  });
+
+  if (error) {
+    console.error("Google login error:", error);
+    alert("Googleログインに失敗しました");
+  }
+}
+
+document.getElementById("googleLoginBtn").addEventListener("click", loginWithGoogle);
+
 
 // ページ読み込み時にログイン状態確認
 async function checkLogin() {
