@@ -1,3 +1,5 @@
+# 今は使ってない
+
 #　FastAPI：高速なAPIサーバーを簡単に作成できるフレームワーク
 from fastapi import FastAPI
 
