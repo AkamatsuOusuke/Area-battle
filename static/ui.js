@@ -19,6 +19,21 @@ if (!name) {
     return;
 }
 
+// 名前の重複確認。Edge Functionにリクエストを送って、既存のユーザ名リストを取得して確認する
+const checkRes = await fetch(`${SUPABASE_FUNCTION_URL}/ranking-list`,{
+  headers: {
+    "apikey": SUPABASE_KEY,
+    "Authorization": "Bearer " + SUPABASE_KEY
+  }
+});
+
+const users = await checkRes.json();
+
+if (users.some(u => u.username === name)) {
+  alert("その名前は既に使われています。別の名前にしてください。");
+  return;
+}
+
 // ログインしてるか確認
 const { data } = await sb.auth.getUser();
 const user = data.user;
@@ -162,6 +177,10 @@ async function sendArea() {
 
     if (!insertRes.ok) {
         alert("ランキング登録に失敗しました。");
+        return;
+    }
+    if (!insertRes.ok) {
+        alert("このユーザー名は既に使われています。");
         return;
     }
 
