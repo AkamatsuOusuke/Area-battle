@@ -123,13 +123,24 @@ async function sendArea() {
     // ↑ result = { "area": 面積の数値 } という構造で受け取れる
     document.getElementById("result").innerText = "面積: " + result.area;
 
-    // Supabase Edge Functionにリクエストを送る。面積計算が終わったら、ランキングに結果を送信
+    // ランキング登録の処理。面積計算が終わった後に行う
+    const { data: sessionData } = await sb.auth.getSession();
+    // アクセストークンを取得(ログインしてない場合はnull)
+    const accessToken = sessionData.session?.access_token;
+
+    // ログインしてない場合はランキング登録できないようにする
+    if (!accessToken) {
+        alert("ランキング登録はログインが必要です！");
+        return;
+    }
+
+    // Supabase Edge Functionにリクエストを送る。ランキングに結果を送信
     const insertRes = await fetch(`${SUPABASE_FUNCTION_URL}/ranking-insert`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "apikey": SUPABASE_KEY,
-            "Authorization": "Bearer " + SUPABASE_KEY
+            "Authorization": `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
             username: name,
