@@ -331,6 +331,24 @@ async function loadRanking() {
     }
 }
 
+// タイトルに戻る処理
+function backToTitle() {
+
+    // GPS停止
+    if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+    }
+
+    // 地図リセット
+    resetMap();
+
+    // タイトル画面を表示
+    document.getElementById("titleScreen").style.display = "flex";
+
+    // 面積表示クリア
+    document.getElementById("result").innerText = "面積: 0";
+}
 
 // アプリを閉じたとき
 window.addEventListener("pagehide", () => {
