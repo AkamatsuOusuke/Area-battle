@@ -47,7 +47,7 @@ if(installPrompt){
     installBtn.style.display = "none"; // ボタンを非表示
 } else if(navigator.userAgent.match(/iPhone|iPad|iPod/)){
     // iOS Safari用
-    alert("共有 → 『ホーム画面に追加』でインストールできます");
+    alert("Safariで開いている方は、共有 → 『ホーム画面に追加』でインストールできます");
 } else {
     // それ以外
     alert("このブラウザでは自動インストールできません。ブラウザメニューからホーム画面に追加してください");

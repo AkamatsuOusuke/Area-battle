@@ -101,10 +101,6 @@ async function sendArea() {
     const { data: userData } = await sb.auth.getUser();
     const user = userData.user;
 
-    /*if(user){
-        bodyData.user_id = user.id; // ログインしてる場合はuser_idも送る  👈使えそう
-    }*/
-
     // Supabase Edge Functionにリクエストを送る。面積計算のみなので、座標のみ送信
     let res = await fetch(`${SUPABASE_FUNCTION_URL}/area`, {
         method: "POST",
