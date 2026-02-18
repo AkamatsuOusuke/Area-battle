@@ -83,6 +83,22 @@ document.getElementById("titleScreen").style.display = "none";
 startGPS();
 }
 
+// 名前が未設定か確認して警告表示
+async function checkNameStatus() {
+    if (!sb) return;
+
+    const { data } = await sb.auth.getUser();
+    const user = data.user;
+
+    if (user) {
+        const existingName = user.user_metadata?.["display-name"];
+
+        if (!existingName) {
+            document.getElementById("nameWarning").style.display = "block";
+        }
+    }
+}
+
 // 面積計算用
 async function sendArea() {
     if (points.length < 3) {
@@ -405,5 +421,10 @@ document.addEventListener("visibilitychange", () => {
 if (document.hidden) {
     firstMove = true;
 }
+});
+
+// ページロード時に名前の状態を確認して警告表示
+window.addEventListener("load", () => {
+    checkNameStatus();
 });
 
