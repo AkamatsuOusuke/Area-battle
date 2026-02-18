@@ -59,7 +59,8 @@
           background: linear-gradient(90deg, #31bb91, #22d3ee);
           border: none;
           color: black;
-          width: 200px; /* 横幅を統一 */
+          width: 260px; /* 横幅を統一 */
+          white-space: nowrap;   /* 改行させない */
       }
 
       #result {
@@ -215,9 +216,12 @@
 
     <button id="startGameBtn" class="title-btn" onclick="startGame()" style="line-height: 1.2;">GPS開始<br><span style="font-size: 0.7em;">（ゲストログイン）</span></button>
 
-    <button class="title-btn" onclick="signIn()">ログイン</button>
+    <button class="title-btn" onclick="signIn()"> ✉ メールでログイン</button>
 
-    <button id="googleLoginBtn" class="title-btn">Googleでログイン</button>
+    <button id="googleLoginBtn" class="title-btn">
+      <img src="https://developers.google.com/identity/images/g-logo.png" 
+       alt="Google" width="20" height="20">Googleでログイン
+    </button>
 
     <button class="title-btn" onclick="signUp()">新規登録</button>
 
