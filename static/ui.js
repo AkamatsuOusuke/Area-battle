@@ -14,10 +14,22 @@ if (!sb) {
 
 let name = document.getElementById("titlename").value;
 
+name = name.replace(/^[\s\u3000]+|[\s\u3000]+$/g, "");// 前後のスペースを削除
+
 if (!name) {
     alert("PLAYER NAMEを入力してね");
     return;
 }
+
+// ランキングデータを取得して、同じ名前がないか確認する。重複してる場合は警告を出す
+const checkRes = await fetch(`${SUPABASE_FUNCTION_URL}/ranking-list`,{
+  headers: {
+    "apikey": SUPABASE_KEY,
+    "Authorization": "Bearer " + SUPABASE_KEY
+  }
+});
+
+const users = await checkRes.json();
 
 // ログインしてるか確認
 const { data } = await sb.auth.getUser();
@@ -41,6 +53,11 @@ if (user) {
         }
 
     } else {
+        if (users.some(u => u.username === name)) {
+            alert("その名前は既に使われています。");
+            return;
+        }
+
         // 初回のみ保存
         await sb.auth.updateUser({
             data: { "display-name": name }
@@ -182,10 +199,6 @@ async function sendArea() {
 
     if (!insertRes.ok) {
         alert("ランキング登録に失敗しました。");
-        return;
-    }
-    if (!insertRes.ok) {
-        alert("このユーザー名は既に使われています。");
         return;
     }
 
