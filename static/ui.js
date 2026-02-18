@@ -19,31 +19,36 @@ if (!name) {
     return;
 }
 
-// 名前の重複確認。Edge Functionにリクエストを送って、既存のユーザ名リストを取得して確認する
-const checkRes = await fetch(`${SUPABASE_FUNCTION_URL}/ranking-list`,{
-  headers: {
-    "apikey": SUPABASE_KEY,
-    "Authorization": "Bearer " + SUPABASE_KEY
-  }
-});
-
-const users = await checkRes.json();
-
-if (users.some(u => u.username === name)) {
-  alert("その名前は既に使われています。別の名前にしてください。");
-  return;
-}
-
 // ログインしてるか確認
 const { data } = await sb.auth.getUser();
 const user = data.user;
-if(user){
-    // ログイン中はsupabaseにdisplay-name保存
-    await sb.auth.updateUser({
-        data:{ "display-name":name }
-    });
+
+// ログインしてる場合はSupabaseのユーザーデータを優先して保存
+if (user) {
+
+    const existingName = user.user_metadata?.["display-name"];
+
+    // すでに名前が設定されている場合
+    if (existingName) {
+
+        // 同じ名前ならOK（弾かない）
+        if (existingName === name) {
+            // 何もしない
+        } else {
+            alert("ユーザー名は変更できません。");
+            document.getElementById("titlename").value = existingName;
+            return;
+        }
+
+    } else {
+        // 初回のみ保存
+        await sb.auth.updateUser({
+            data: { "display-name": name }
+        });
+    }
+
 } else {
-    //　ゲストログイン時はLocalStorageに保存
+    // ゲストログイン時はLocalStorageに保存
     localStorage.setItem("guest_name", name);
 }
 
