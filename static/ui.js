@@ -69,8 +69,12 @@ if (user) {
     localStorage.setItem("guest_name", name);
 }
 
-// HUDにコピー。dispaly-nameはログイン状態に関わらず表示する。（<div>なのでvalueは使えない）
-document.getElementById("display-name").textContent = "PLAYER: " + name;
+// HUDにコピー。dispaly-nameはログイン状態に関わらず表示する。ただし、自分判定を回避するために名前は変える。（<div>なのでvalueは使えない）
+if (user) {
+    document.getElementById("display-name").textContent = "PLAYER: " + name;
+} else {
+    document.getElementById("display-name").textContent = "GUEST: " + name;
+}
 
 // タイトル画面消す
 document.getElementById("titleScreen").style.display = "none";
