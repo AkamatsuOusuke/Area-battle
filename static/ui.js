@@ -223,7 +223,7 @@ async function sendArea() {
     }
 
     playedThisSession = true;
-    loadRanking(); // ランキング更新
+    await loadRanking(); // ランキング更新
 }
 
 // 地図リセット用
@@ -259,6 +259,45 @@ function resetMap() {
 let watchId = null; // 監視ID
 let marker = null; // 現在地マーカー
 let circles = [];
+let lastMyRank = null; // 自分の順位を保存する変数
+let lastMyArea = null; // 自分の面積を保存する変数
+
+// Supabaseクライアントの準備ができたら、ログイン状態を確認してUIを更新する
+
+// SNS投稿用の面積フォーマット関数
+function formatAreaForShare(area) {
+  const n = Number(area);
+  if (!Number.isFinite(n)) return String(area);
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(2)} km²`;
+  if (n >= 10_000) return `${Math.round(n).toLocaleString()} m²`;
+  return `${Math.round(n)} m²`;
+}
+
+// Xにシェア
+async function shareToX() {
+  if (lastMyRank == null || lastMyArea == null) {
+    alert("シェアする記録がまだありません。先に面積計算してランキング登録してね！");
+    return;
+  }
+
+  const areaText = formatAreaForShare(lastMyArea);
+  const text = `🔥 ${areaText}制圧！\n現在${lastMyRank}位！\n#エリアバトル #AREABATTLE`;
+  const url = location.href;
+
+  // まずは端末の共有メニュー（PWA/スマホで強い）
+  try {
+    if (navigator.share) {
+      await navigator.share({ text, url });
+      return;
+    }
+  } catch (e) {
+    // ユーザーがキャンセル等 → フォールバックへ
+  }
+
+  // フォールバック：Xの投稿画面を開く（Web Intent）
+  const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+  window.open(intent, "_blank", "noopener,noreferrer");
+}
 
 // GPSスタート
 function startGPS() {
@@ -384,6 +423,8 @@ async function loadRanking() {
         document.getElementById("myRank").innerHTML = `あなたは${myRank}位です！<br>面積: ${myArea} m²`;
         document.getElementById("myRankBox").style.display = "block";
     } else {
+        lastMyRank = null;
+        lastMyArea = null;
         document.getElementById("myRankBox").style.display = "none";
     }
 }
@@ -426,5 +467,10 @@ if (document.hidden) {
 // ページロード時に名前の状態を確認して警告表示
 window.addEventListener("load", () => {
     checkNameStatus();
+
+    const shareBtn = document.getElementById("shareXBtn");
+    if (shareBtn) {
+        shareBtn.addEventListener("click", shareToX);// Xシェアボタンのクリックイベントを設定
+    }
 });
 
