@@ -162,15 +162,43 @@ async function logout(){
 async function updateLoginUI(){
     const { data } = await sb.auth.getUser();
     const user = data.user;
-    const btn = document.getElementById("startGameBtn");
+
+    const startBtn = document.getElementById("startGameBtn");
+    const emailBtn = document.getElementById("emailLoginBtn");
+    const googleBtn = document.getElementById("googleLoginBtn");
+
     const displayNameDiv = document.getElementById("display-name");
 
 
     // スタートボタン更新（前のupdateStartButton)
-    if (btn) {
-        btn.innerHTML = user 
+    if (startBtn) {
+        startBtn.innerHTML = user 
             ? "GPS開始" 
             : "GPS開始<br><span style='font-size: 0.7em;'>※ランキング参加はログインが必要です</span>";
+    }
+
+    if (emailBtn) {
+        if (user) {
+            emailBtn.textContent = "ログイン済み";
+            emailBtn.disabled = true;          // 押せないようにする（任意）
+        } else {
+            emailBtn.textContent = "✉ メールでログイン";
+            emailBtn.disabled = false;
+        }
+    }
+
+    // 追加：Googleボタンもログイン済みにしたい場合（任意）
+    if (googleBtn) {
+        if (user) {
+            googleBtn.disabled = true;
+            // 中が span 構造なので textContent でまとめて変えるより、内側の文言だけ変える.
+            const label = googleBtn.querySelector(".btn-content span:last-child");
+        if (label) label.textContent = "ログイン済み";
+        } else {
+            googleBtn.disabled = false;
+            const label = googleBtn.querySelector(".btn-content span:last-child");
+        if (label) label.textContent = "Googleでログイン";
+        }
     }
 
     if(user){
