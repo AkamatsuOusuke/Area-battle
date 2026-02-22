@@ -39,15 +39,15 @@ installBtn.style.display = "block"; // 手動案内用に表示
 // ボタンクリック処理
 installBtn.addEventListener("click", async () => {
 if(installPrompt){
-    // Chrome用
+    // ChromeOS用
     installPrompt.prompt();
     const choice = await installPrompt.userChoice; //ユーザが「インストールする/キャンセル」を選んだ結果を待つ
     console.log(choice.outcome === "accepted" ? "PWAがインストールされました" : "キャンセル");
     installPrompt = null; // 一度使ったら再度ボタンを押せないように
     installBtn.style.display = "none"; // ボタンを非表示
 } else if(navigator.userAgent.match(/iPhone|iPad|iPod/)){
-    // iOS Safari用
-    alert("Safariで開いている方は、共有 → 『ホーム画面に追加』でインストールできます");
+    // iOS用
+    alert("Safariで開いていただき、共有 → 『ホーム画面に追加』でインストールできます");
 } else {
     // それ以外
     alert("このブラウザでは自動インストールできません。ブラウザメニューからホーム画面に追加してください");
