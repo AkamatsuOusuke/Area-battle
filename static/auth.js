@@ -17,23 +17,6 @@ async function waitForSupabase() {
     });
 }
 
-function initSupabase(){
-    // window.supabase または supabase が存在するかチェック
-    const supabaseClient = window.supabase || supabase; 
-    
-    if (!supabaseClient) {
-        console.error("Supabase SDK not found");
-        return false;
-    }
-
-    const SUPABASE_URL = "https://jysjolovimtyvimkhfpd.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5c2pvbG92aW10eXZpbWtoZnBkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3MDA5MzQsImV4cCI6MjA4NjI3NjkzNH0.YDrF0H_mq99R5LIhcFVe4EAc-Z0ZwyB-WUH9XwdqDTo";
-
-    window.sb = supabaseClient.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); //windowをつけると、他のjsから使えるようになる
-    sb = window.sb;
-    return true;
-}
-
 // サインアップ(新規登録)
 async function signUp(){
     const email = prompt("メールアドレスを入力");

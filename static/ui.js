@@ -252,7 +252,7 @@ function resetMap() {
         map.removeLayer(polygonLayer);
     }
     // 結果表示をクリア
-    document.getElementById("result").innerText = "";
+    document.getElementById("result").innerText = "面積: 0";
 }
 
 // GPS関連
