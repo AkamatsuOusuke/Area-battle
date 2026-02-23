@@ -183,42 +183,54 @@
           transform: none !important;  /* 押した時の凹みをなくす */
       }
 
+      /* ===== HUD内 3ボタン横並び ===== */
+      .hud-actions{
+        display:flex;
+        justify-content:center;
+        gap:12px;
+        margin-top:10px;
+        flex-wrap:wrap; /* 画面が狭いとき折り返す */
+      }
+
+      .hud-actions button{
+        width:auto;           /* 横幅100%をやめる */
+        padding:8px 12px;     /* 小さめ */
+        font-size:12px;
+        border-radius:10px;
+      }
+
+      /* ログアウト（黒×水色ネオン） */
       #logoutBtn{
-          position: absolute;
-          top: 70px;
-          left: 30px;
-          padding: 6px 12px;
-          font-size: 12px;
-          background: black;
-          color: #00fff7;
-          border: 1px solid #00fff7;
-          border-radius: 6px;
-          width: auto;
-          cursor: pointer;
+        background:black;
+        color:#00fff7;
+        border:1px solid #00fff7;
+        box-shadow:none;
+      }
+      #logoutBtn:hover{
+        background:#ef4444;
+        box-shadow:0 0 12px rgba(239,68,68,0.6);
       }
 
-      #logoutBtn:hover {
-          background: #ef4444;
-          box-shadow: 0 0 12px rgba(239,68,68,0.6);
+      /* タイトルへ戻る（黒×青ネオン） */
+      #backToTitleBtn{
+        background:black;
+        color:#22d3ee;
+        border:1px solid #22d3ee;
+        box-shadow:none;
+      }
+      #backToTitleBtn:hover{
+        background:#22d3ee;
+        color:black;
       }
 
-      #backToTitleBtn {
-        position: absolute;
-        top: 70px;
-        right: 30px;
-        padding: 6px 12px;
-        font-size: 12px;
-        background: black;
-        color: #22d3ee;
-        border: 1px solid #22d3ee;
-        border-radius: 6px;
-        width: auto;
-        cursor: pointer;
+      /* リセット（赤ネオン） */
+      #resetBtn{
+        background:linear-gradient(90deg,#7f1d1d,#ef4444);
+        color:white;
+        box-shadow:0 0 10px rgba(239,68,68,0.6);
       }
-
-      #backToTitleBtn:hover {
-        background: #22d3ee;
-        color: black;
+      #resetBtn:hover{
+        box-shadow:0 0 18px rgba(239,68,68,0.9);
       }
 
       /* ===== スコアボード ===== */
@@ -362,6 +374,7 @@
         <div id="result">面積: 0</div>
 
         <button id="backToTitleBtn" onclick="backToTitle()">タイトルへ戻る</button>
+        <button id="resetBtn" onclick="resetMap()">リセット</button>
         <button id="logoutBtn" onclick="logout()">ログアウト</button>
 
       </div>
@@ -370,7 +383,6 @@
 
       <div class="action-buttons">
         <button class="title-btn" onclick="sendArea()">面積計算</button>
-        <button class="title-btn" onclick="resetMap()">地図リセット</button>
       </div>
 
       <!--広告エリア-->
