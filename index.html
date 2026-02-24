@@ -183,6 +183,30 @@
           transform: none !important;  /* 押した時の凹みをなくす */
       }
 
+      /* ===== AREA SCAN 強化 ===== */
+      .area-scan-btn{
+        background: linear-gradient(90deg, #00fff7, #22d3ee, #0ea5e9);
+        color: #020617;
+        font-weight: 900;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        box-shadow:
+          0 0 8px #00fff7,
+          0 0 18px rgba(0,255,247,0.7);
+        transition: all 0.25s ease;
+      }
+
+      .area-scan-btn:hover{
+        transform: scale(1.03);
+        box-shadow:
+          0 0 12px #00fff7,
+          0 0 25px rgba(0,255,247,0.9);
+      }
+
+      .area-scan-btn:active{
+        transform: scale(0.96);
+      }
+
       /* ===== HUD内 3ボタン横並び ===== */
       .hud-actions{
         display:flex;
@@ -382,7 +406,7 @@
       <div id="map"></div>
 
       <div class="action-buttons">
-        <button class="title-btn" onclick="sendArea()">⚡ AREA SCAN</button>
+        <button class="title-btn area-scan-btn" onclick="sendArea()">⚡ AREA SCAN</button>
       </div>
 
       <!--広告エリア-->
