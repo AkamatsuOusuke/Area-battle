@@ -403,3 +403,29 @@ font-size: 18px;
 font-weight: bold;
 color: #22d3ee;
 }
+
+/* ランキングのタブ切り替え */
+.rank-tabs{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin: 6px 0 12px;
+  flex-wrap:wrap;
+}
+
+.tab-btn{
+  width:auto;
+  padding:10px 14px;
+  font-size:12px;
+  border-radius:999px;
+  box-shadow:none;
+  background: rgba(34,211,238,0.10);
+  border:1px solid rgba(34,211,238,0.28);
+  color:#22d3ee;
+}
+
+.tab-btn.is-active{
+  background: linear-gradient(90deg,#00fff7,#22d3ee);
+  color:#020617;
+  border:none;
+}

@@ -371,8 +371,13 @@ watchId = navigator.geolocation.watchPosition(
 }
 
 // ランキング更新用
-async function loadRanking() {
-    let res = await fetch(`${SUPABASE_FUNCTION_URL}/ranking-list`,{
+async function loadRanking(range = "all") {
+    let endpoint = "ranking-list";
+    if (range === "daily") endpoint = "ranking-daily"; // 日間ランキングのエンドポイントに切り替え
+    if (range === "weekly") endpoint = "ranking-weekly"; // 週間ランキングのエンドポイントに切り替え
+
+    // endpointにアクセスしてランキングデータを取得する。Supabase Edge Functionで処理する
+    let res = await fetch(`${SUPABASE_FUNCTION_URL}/${endpoint}`,{
         headers: {
             "apikey": SUPABASE_KEY,
             "Authorization": "Bearer " + SUPABASE_KEY
@@ -472,5 +477,24 @@ window.addEventListener("load", () => {
     if (shareBtn) {
         shareBtn.addEventListener("click", shareToX);// Xシェアボタンのクリックイベントを設定
     }
+});
+
+/*タブのクリックでランキングを切り替える処理*/
+let currentRange = "all";
+
+function setActiveTab(range){
+  document.querySelectorAll(".tab-btn").forEach(btn=>{
+    btn.classList.toggle("is-active", btn.dataset.range === range);
+  });
+}
+
+window.addEventListener("load", () => {
+  document.querySelectorAll(".tab-btn").forEach(btn=>{
+    btn.addEventListener("click", async () => {
+      currentRange = btn.dataset.range;
+      setActiveTab(currentRange);
+      await loadRanking(currentRange);
+    });
+  });
 });
 
