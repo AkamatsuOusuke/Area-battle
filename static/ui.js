@@ -496,5 +496,6 @@ window.addEventListener("load", () => {
       await loadRanking(currentRange);
     });
   });
+  loadRanking(currentRange);
 });
 
