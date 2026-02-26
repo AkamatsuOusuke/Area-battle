@@ -16,6 +16,10 @@ function startOfDayJstIso(): string {
 }
 
 serve(async () => {
+   if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+  
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
