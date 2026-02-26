@@ -209,25 +209,24 @@ text-align: center;
 }
 
 /* 操作ボタンのスタイル */
-button {
-width: 100%;
-box-sizing: border-box;
-padding: 16px;
-font-size: 15px;
-border: none;
-border-radius: 14px;
-background: linear-gradient(90deg, #0ea5e9, #22d3ee);
-color: white;
-font-weight: bold;
-letter-spacing: 1px;
-box-shadow: 0 0 12px rgba(34, 211, 238, 0.4);
+.btn {
+    box-sizing: border-box;
+    padding: 16px;
+    font-size: 15px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(90deg, #0ea5e9, #22d3ee);
+    color: white;
+    font-weight: bold;
+    letter-spacing: 1px;
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.4);
 }
 
-button:active {
-transform: scale(0.94);
+.btn:active {
+    transform: scale(0.94);
 }
 
-button:disabled {
+.btn:disabled {
     background: #555 !important; /* グレーにする */
     cursor: not-allowed;         /* カーソルを禁止マークにする */
     box-shadow: none !important; /* 光るエフェクトを消す */

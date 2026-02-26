@@ -34,9 +34,9 @@
       ⚠ この名前は一度設定すると変更できません。
     </div>
 
-    <button id="startGameBtn" class="title-btn" onclick="startGame()" style="line-height: 1.2;">GPS開始<br><span style="font-size: 0.7em;">（ゲストログイン）</span></button>
+    <button id="startGameBtn" class="btn title-btn" onclick="startGame()" style="line-height: 1.2;">GPS開始<br><span style="font-size: 0.7em;">（ゲストログイン）</span></button>
 
-    <button id="googleLoginBtn" class="title-btn">
+    <button id="googleLoginBtn" class="btn title-btn">
       <span class="btn-content">
         <img  src="static/google.png" width="20"
             alt="Google" class="google-icon">
@@ -45,11 +45,11 @@
     </button>
 
     <div class="title-row">
-      <button id="emailLoginBtn" class="title-btn" onclick="signIn()"> ✉ メールでログイン</button>
-      <button class="title-btn" onclick="signUp()">新規登録</button>
+      <button id="emailLoginBtn" class="btn title-btn" onclick="signIn()"> ✉ メールでログイン</button>
+      <button class="btn title-btn" onclick="signUp()">新規登録</button>
     </div>
 
-    <button id="installBtn" class="install-btn">アプリをインストール</button>
+    <button id="installBtn" class="btn install-btn">アプリをインストール</button>
 
     <!--ゲーム説明文-->
     <div class="title-desc">
@@ -76,9 +76,9 @@
         <div id="result">面積: 0</div>
 
         <div class ="hud-actions">
-          <button id="backToTitleBtn" onclick="backToTitle()">タイトルへ戻る</button>
-          <button id="resetBtn" onclick="resetMap()">リセット</button>
-          <button id="logoutBtn" onclick="logout()">ログアウト</button>
+          <button id="backToTitleBtn" class="btn" onclick="backToTitle()">タイトルへ戻る</button>
+          <button id="resetBtn" class="btn" onclick="resetMap()">リセット</button>
+          <button id="logoutBtn" class="btn" onclick="logout()">ログアウト</button>
         </div>
 
 
@@ -87,7 +87,7 @@
       <div id="map"></div>
 
       <div class="action-buttons">
-        <button class="title-btn area-scan-btn" onclick="sendArea()">AREA SCAN</button>
+        <button class="btn title-btn area-scan-btn" onclick="sendArea()">AREA SCAN</button>
       </div>
 
       <!--広告エリア-->
