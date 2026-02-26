@@ -30,7 +30,7 @@
 
     <input id="titlename" class="playerNameInput title-input" type="text" placeholder="PLAYER NAME">
 
-    <div id="nameWarning" style="font-size:12px; color:#ffcc00; margin-top:0px; margin-bottom:4px; display:none;">
+    <div id="nameWarning" class="name-warning">
       ⚠ この名前は一度設定すると変更できません。
     </div>
 
@@ -72,7 +72,7 @@
     <div class="container">
     <!--hud:ゲームの上部情報欄-->
       <div class="hud">
-        <div id="display-name" style="font-size:16px; color:#22d3ee; margin-top:5px; font-weight:bold;"></div>
+        <div id="display-name" class="display-name"></div>
         <div id="result">面積: 0</div>
 
         <div class ="hud-actions">
@@ -108,8 +108,7 @@
         <h3>⭐ YOUR RANK</h3>
         <div id="myRank"></div>
 
-        <button id="shareXBtn" class="title-btn"
-          style="margin-top:10px; background:#0ea5e9; color:white;">
+        <button id="shareXBtn" class="btn title-btn share-x-btn">
           Xでシェア
         </button>
       </div>
@@ -120,7 +119,7 @@
       </div>
 
       <footer class="footer">
-        <a href="/static/privacy.html" class="link-cyan" style="margin-right:12px;">
+        <a href="/static/privacy.html" class="link-cyan footer-link">
           プライバシーポリシー
         </a>
         <span>お問い合わせ：areabattle.contact@gmail.com</span>
