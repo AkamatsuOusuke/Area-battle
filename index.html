@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <link rel="stylesheet" href="/static/styles.css"><!--全体スタイル-->
 
     <meta name="theme-color" content="#00fff7"><!--スプラッシュ-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><!-- スマホ対応 -->
@@ -19,327 +20,15 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="manifest" href="/static/manifest.json"><!--アプリ設定(manifest.js)-->
 
-    
-    <style>
-      body {
-        margin: 0;
-        font-family: "Orbitron", sans-serif;
-        background: #020617;
-        color: white;
-      }
-
-      .header{
-        text-align:center;
-        padding:10px;
-        font-size:22px;
-      }
-
-      .container{
-        padding:10px;
-      }
-
-      /* ===== HUD ===== */
-      .hud {
-        background: #020617;
-        padding: 14px;
-        padding-top: 60px;
-        border-radius: 16px;
-        margin-bottom: 12px;
-        box-shadow: 0 0 15px rgba(0, 200, 255, 0.3);
-        text-align: center;
-      }
-
-      #titleScreen{
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          gap: 12px; /* ボタンや入力間の縦間隔を統一 */
-      }
-
-      .neon-title {
-        font-size: 42px;
-        color: #22ee77;
-        text-align: center;
-        letter-spacing: 3px;
-
-        text-shadow:
-          0 0 2px #22ee77,
-          0 0 4px #22ee77,
-          0 0 6px #00ffcc;
-
-        animation: neonGlow 3.5s ease-in-out infinite alternate;
-      }
-
-      @keyframes neonGlow {
-        from {
-          text-shadow:
-            0 0 2px #22ee77,
-            0 0 4px #22ee77,
-            0 0 6px #00ffcc;
-        }
-        to {
-          text-shadow:
-            0 0 4px #22ee77,
-            0 0 8px #22ee77,
-            0 0 12px #00ffcc;
-        }
-      }
-
-
-      /* メールログイン + 新規登録 を横並びにする箱 */
-      .title-row {
-        display: flex;
-        gap: 10px;
-        width: 300px;         /* title-btn と同じ幅 */
-      }
-
-      /* 横並び内のボタンは半分幅 */
-      .title-row .title-btn {
-        width: 100%;
-        padding: 14px 10px;   /* 少しだけコンパクトに */
-        font-size: 14px;
-        border-radius: 14px;
-      }
-
-      .title-btn{
-          padding: 16px 30px;
-          font-size: 18px;
-          border-radius: 14px;
-          background: linear-gradient(90deg, #31bb91, #22d3ee);
-          border: none;
-          color: black;
-          width: 300px; /* 横幅を統一 */
-          white-space: nowrap;   /* 改行させない */
-      }
-
-      .btn-content {
-        display: flex;
-        align-items: center;
-        justify-content: center; 
-        gap: 10px;
-        width: 100%;
-      }
-
-      .google-icon {
-          width: 20px;
-          height: 20px;
-          display: block;
-      }
-
-      #result {
-        font-size: 20px;
-        color: #22d3ee;
-        margin-bottom: 10px;
-      }
-
-      /* ===== 地図 ===== */
-      #map {
-        height: 35vh;
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 0 20px rgba(0, 200, 255, 0.25);
-        margin-bottom: 14px;
-      }
-
-      /* ===== 操作ボタン ===== */
-      .action-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        width: 100%;
-        align-items: center; /* ボタンを中央揃え */
-      }
-
-      /* 操作ボタンの横幅を広げる */
-      .action-buttons button {
-        width: 300px; 
-        text-align: center;
-      }
-
-      /* 操作ボタンのスタイル */
-      button {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 16px;
-        font-size: 15px;
-        border: none;
-        border-radius: 14px;
-        background: linear-gradient(90deg, #0ea5e9, #22d3ee);
-        color: white;
-        font-weight: bold;
-        letter-spacing: 1px;
-        box-shadow: 0 0 12px rgba(34, 211, 238, 0.4);
-      }
-
-      button:active {
-        transform: scale(0.94);
-      }
-
-      button:disabled {
-          background: #555 !important; /* グレーにする */
-          cursor: not-allowed;         /* カーソルを禁止マークにする */
-          box-shadow: none !important; /* 光るエフェクトを消す */
-          transform: none !important;  /* 押した時の凹みをなくす */
-      }
-
-      /* ===== AREA SCAN 強化 ===== */
-      .area-scan-btn{
-        font-family: 'Exo 2', sans-serif;
-        font-weight: 700;
-        letter-spacing: 4px;
-        font-size: 20px;
-        background: linear-gradient(90deg, #00fff7, #22d3ee, #0ea5e9);
-        color: #020617;
-        font-weight: 900;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-        box-shadow:
-          0 0 8px #00fff7,
-          0 0 18px rgba(0,255,247,0.7);
-        transition: all 0.25s ease;
-      }
-
-      .area-scan-btn:hover{
-        transform: scale(1.03);
-        box-shadow:
-          0 0 12px #00fff7,
-          0 0 25px rgba(0,255,247,0.9);
-      }
-
-      .area-scan-btn:active{
-        transform: scale(0.96);
-      }
-
-      /* ===== HUD内 3ボタン横並び ===== */
-      .hud-actions{
-        display:flex;
-        justify-content:center;
-        gap:12px;
-        margin-top:10px;
-        flex-wrap:wrap; /* 画面が狭いとき折り返す */
-      }
-
-      .hud-actions button{
-        width:auto;           /* 横幅100%をやめる */
-        padding:8px 12px;     /* 小さめ */
-        font-size:12px;
-        border-radius:10px;
-      }
-
-      /* ログアウト（黒×水色ネオン） */
-      #logoutBtn{
-        background:black;
-        color:#00fff7;
-        border:1px solid #00fff7;
-        box-shadow:none;
-      }
-      #logoutBtn:hover{
-        background:#ef4444;
-        box-shadow:0 0 12px rgba(239,68,68,0.6);
-      }
-
-      /* タイトルへ戻る（黒×青ネオン） */
-      #backToTitleBtn{
-        background:black;
-        color:#22d3ee;
-        border:1px solid #22d3ee;
-        box-shadow:none;
-      }
-      #backToTitleBtn:hover{
-        background:#22d3ee;
-        color:black;
-      }
-
-      /* リセット（赤ネオン） */
-      #resetBtn{
-        background:black;
-        color:#ef4444;
-        border:1px solid #ef4444;
-        box-shadow:none;
-      }
-      #resetBtn:hover{
-        background:#ef4444;
-        color:black;
-      }
-
-      /* ===== スコアボード ===== */
-      .ranking-board {
-        margin-top: 20px;
-        background: #020617;
-        border-radius: 16px;
-        padding: 14px;
-        box-shadow: 0 0 12px rgba(0, 200, 255, 0.2);
-      }
-
-      .rank-item {
-        display: flex;
-        justify-content: space-between;
-        padding: 12px;
-        margin-bottom: 8px;
-        border-radius: 10px;
-        border: 1px solid rgba(0, 200, 255, 0.3);
-      }
-
-      .rank-item:first-child {
-        border: 1px solid gold;
-        box-shadow: 0 0 12px gold;
-      }
-
-      .my-rank{
-        border: 2px solid #22d3ee;
-        box-shadow: 0 0 15px #22d3ee;
-        background: rgba(34, 211, 238, 0.1);
-      }
-
-      #myRankBox {
-        border: 2px solid #22d3ee;
-        box-shadow: 0 0 20px #22d3ee;
-      }
-
-      #myRank {
-        font-size: 18px;
-        font-weight: bold;
-        color: #22d3ee;
-      }
-
-    </style>
   </head>
 
   <body>
     <!--タイトル画面-->
-    <div id="titleScreen" style="
-      position:fixed;
-      top:0;
-      left:0;
-      width:100%;
-      height:100%;
-      background:#020617;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      z-index:9999;
-
-      overflow-y:auto;        /* ★追加：縦スクロールOK */
-      -webkit-overflow-scrolling: touch; /* ★追加：iPhoneで滑らか */
-      padding: 24px 0;             /* ★追加：上と下に余白 */
-      box-sizing:border-box;
-    ">
+    <div id="titleScreen" class="title-screen">
 
     <h1  class="neon-title" >AREA BATTLE</h1>
 
-    <input id="titlename" class="playerNameInput" type="text" placeholder="PLAYER NAME"
-    style="
-      padding:12px;
-      margin-top:20px;
-      margin-bottom:10px;
-      border-radius:
-      10px;border:none;
-      text-align:center;
-      font-size:16px;
-      width:300px;"
-    >
+    <input id="titlename" class="playerNameInput title-input" type="text" placeholder="PLAYER NAME">
 
     <div id="nameWarning" style="font-size:12px; color:#ffcc00; margin-top:0px; margin-bottom:4px; display:none;">
       ⚠ この名前は一度設定すると変更できません。
@@ -360,31 +49,19 @@
       <button class="title-btn" onclick="signUp()">新規登録</button>
     </div>
 
-    <button id="installBtn" style="
-      display:none;
-      margin:10px auto;
-      padding:18px 28px;
-      font-size:18px;
-      border-radius:14px;
-      border:none;
-      background:linear-gradient(90deg,#ff9900,#ffcc33);
-      color:black;
-      font-weight:bold;
-      cursor:pointer;
-      width:300px
-    ">アプリをインストール</button>
+    <button id="installBtn" class="install-btn"></button>アプリをインストール</button>
 
     <!--ゲーム説明文-->
-    <div style="max-width:400px; margin:20px auto; font-size:14px; opacity:0.8; text-align:center; line-height:1.6;">
+    <div class="title-desc">
       <p>Area Battleは、GPSを活用したリアルワールド型の対戦ゲームです。プレイヤーは実際に移動して取得した位置情報をもとにエリアを形成し、その面積の大きさで全国のユーザーと競います。</p>
       <p>移動ルートによって作られる多角形の面積を自動計算し、ランキング形式で結果が表示されます。ログインすると記録が保存され、継続的にランキングへ挑戦できます。</p>
       <p>本サービスは位置情報をゲーム体験の向上のために利用しており、取得したデータは適切に管理されます。また、本ゲームは個人開発により運営されており、安心して利用できる環境づくりを心がけています。</p>
     </div>
 
-    <div style="text-align:center; font-size:12px; margin:20px;">
-    <a href="/static/privacy.html" style="color:#22d3ee;">
-      プライバシーポリシー
-    </a>
+    <div class="title-links">
+      <a href="/static/privacy.html" class="link-cyan">
+        プライバシーポリシー
+      </a>
     </div>
     <div style="text-align:center; font-size:12px; margin:0px;">
       お問い合わせ：areabattle.contact@gmail.com
@@ -442,13 +119,8 @@
         <div id="ranking"></div>
       </div>
 
-      <footer style="
-        text-align:center;
-        font-size:12px;
-        margin:30px 0 20px;
-        opacity:0.85;
-      ">
-        <a href="/static/privacy.html" style="color:#22d3ee; margin-right:12px;">
+      <footer class="footer">
+        <a href="/static/privacy.html" class="link-cyan" style="margin-right:12px;">
           プライバシーポリシー
         </a>
         <span>お問い合わせ：areabattle.contact@gmail.com</span>
