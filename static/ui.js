@@ -480,7 +480,7 @@ window.addEventListener("load", () => {
 });
 
 /*タブのクリックでランキングを切り替える処理*/
-let currentRange = "all";
+let currentRange = "daily"; // デフォルトは日間ランキング
 
 function setActiveTab(range){
   document.querySelectorAll(".tab-btn").forEach(btn=>{
