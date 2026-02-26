@@ -108,6 +108,8 @@ to {
 }
 }
 
+.start-btn{ line-height:1.2; }
+.start-btn-sub{ font-size:0.7em; }
 
 /* メールログイン + 新規登録 を横並びにする箱 */
 .title-row {
@@ -125,11 +127,11 @@ border-radius: 14px;
 }
 
 .title-btn{
-    padding: 16px 30px;
+    /*padding: 16px 30px;
     font-size: 18px;
     border-radius: 14px;
     background: linear-gradient(90deg, #31bb91, #22d3ee);
-    border: none;
+    border: none;*/
     color: black;
     width: 300px; /* 横幅を統一 */
     white-space: nowrap;   /* 改行させない */
@@ -185,6 +187,13 @@ width: 100%;
     color:#22d3ee;
 }
 
+/* お問い合わせ */
+.contact{
+    text-align:center; 
+    font-size:12px; 
+    margin:0px;
+}
+
 /* フッター */
 .footer{
     text-align:center;
@@ -225,7 +234,7 @@ width: 300px;
 text-align: center;
 }
 
-/* 操作ボタンのスタイル */
+/* 全部のボタン共通 */
 .btn {
     box-sizing: border-box;
     padding: 16px;
@@ -363,6 +372,12 @@ box-shadow: 0 0 12px gold;
 border: 2px solid #22d3ee;
 box-shadow: 0 0 15px #22d3ee;
 background: rgba(34, 211, 238, 0.1);
+}
+
+/* 自分の順位表示 */
+.my-rankbox{
+    margin-bottom:10px; 
+    display:none;
 }
 
 #myRankBox {
