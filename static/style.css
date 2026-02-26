@@ -17,21 +17,13 @@ padding:10px;
 
 /* ===== HUD ===== */
 .hud {
-background: #020617;
-padding: 14px;
-padding-top: 60px;
-border-radius: 16px;
-margin-bottom: 12px;
-box-shadow: 0 0 15px rgba(0, 200, 255, 0.3);
-text-align: center;
-}
-
-#titleScreen{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 12px; /* ボタンや入力間の縦間隔を統一 */
+    background: #020617;
+    padding: 14px;
+    padding-top: 60px;
+    border-radius: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 0 15px rgba(0, 200, 255, 0.3);
+    text-align: center;
 }
 
 .title-screen{
@@ -51,6 +43,7 @@ text-align: center;
     -webkit-overflow-scrolling: touch; /* ★追加：iPhoneで滑らか */
     padding: 24px 0;             /* ★追加：上と下に余白 */
     box-sizing:border-box; 
+    gap: 12px; /* ボタンや入力間の縦間隔を統一 */
 }
 
 .title-input{
@@ -113,36 +106,31 @@ to {
 
 /* メールログイン + 新規登録 を横並びにする箱 */
 .title-row {
-display: flex;
-gap: 10px;
-width: 300px;         /* title-btn と同じ幅 */
+    display: flex;
+    gap: 10px;
+    width: 300px;         /* title-btn と同じ幅 */
 }
 
 /* 横並び内のボタンは半分幅 */
 .title-row .title-btn {
-width: 100%;
-padding: 14px 10px;   /* 少しだけコンパクトに */
-font-size: 14px;
-border-radius: 14px;
+    flex: 1; /* 均等にスペースを分ける */
+    width: auto; /* 自動で均等割り */
+    padding: 14px 10px;   /* 少しだけコンパクトに */
+    font-size: 14px;
+    border-radius: 14px;
 }
 
 .title-btn{
-    padding: 16px 30px;
-    font-size: 18px;
-    border-radius: 14px;
-    background: linear-gradient(90deg, #31bb91, #22d3ee);
-    border: none;
-    color: black;
     width: 300px; /* 横幅を統一 */
     white-space: nowrap;   /* 改行させない */
 }
 
 .btn-content {
-display: flex;
-align-items: center;
-justify-content: center; 
-gap: 10px;
-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    gap: 10px;
+    width: 100%;
 }
 
 .google-icon {
@@ -229,7 +217,7 @@ align-items: center; /* ボタンを中央揃え */
 }
 
 /* 操作ボタンの横幅を広げる */
-.action-buttons button {
+.action-buttons .btn {
 width: 300px; 
 text-align: center;
 }
