@@ -341,6 +341,16 @@ padding: 14px;
 box-shadow: 0 0 12px rgba(0, 200, 255, 0.2);
 }
 
+/* ランキングタイトル */
+.ranking-board h3{
+  text-align: center;
+  margin: 0 0 14px;
+  letter-spacing: 2px;
+  font-size: 18px;
+  color: #22d3ee;
+  text-shadow: 0 0 6px rgba(34,211,238,0.6);
+}
+
 .rank-item {
 display: flex;
 justify-content: space-between;
@@ -350,9 +360,25 @@ border-radius: 10px;
 border: 1px solid rgba(0, 200, 255, 0.3);
 }
 
+/* HUDとランキングボードの共通の薄い枠 */
+.hud, .ranking-board{
+  border: 1px solid rgba(34, 211, 238, 0.18);
+}
+
+/* 1位の特別装飾 */
 .rank-item:first-child {
-border: 1px solid gold;
-box-shadow: 0 0 12px gold;
+    border: 1px solid gold;
+    box-shadow: 0 0 12px gold;
+}
+
+.rank-item:nth-child(2){
+    border: 1px solid silver;
+    box-shadow: 0 0 12px silver;
+}
+
+.rank-item:nth-child(3){
+    border: 1px solid #cd7f32;
+    box-shadow: 0 0 12px #cd7f32;
 }
 
 .my-rank{
