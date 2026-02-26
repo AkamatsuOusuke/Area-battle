@@ -127,11 +127,11 @@ border-radius: 14px;
 }
 
 .title-btn{
-    /*padding: 16px 30px;
+    padding: 16px 30px;
     font-size: 18px;
     border-radius: 14px;
     background: linear-gradient(90deg, #31bb91, #22d3ee);
-    border: none;*/
+    border: none;
     color: black;
     width: 300px; /* 横幅を統一 */
     white-space: nowrap;   /* 改行させない */
