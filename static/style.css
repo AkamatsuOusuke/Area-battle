@@ -356,13 +356,13 @@ border-radius:10px;
 /* ログアウト（黒×水色ネオン） */
 #logoutBtn{
 background:black;
-color:#00fff7;
-border:1px solid #00fff7;
+color:#09ff00;
+border:1px solid #09ff00;
 box-shadow:none;
 }
 #logoutBtn:hover{
-background:#ef4444;
-box-shadow:0 0 12px rgba(239,68,68,0.6);
+background:#09ff00;
+color:black;
 }
 
 /* タイトルへ戻る（黒×青ネオン） */
