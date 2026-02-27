@@ -18,7 +18,7 @@ async function waitForSupabase() {
 }
 
 // サインアップ(新規登録)
-async function signUp(){
+async function signUp(evt){
     const email = prompt("メールアドレスを入力");
     const password = prompt("パスワードを入力");
 
@@ -28,10 +28,10 @@ async function signUp(){
     }
 
     // ボタンを無効化する
-    const btn = event.target; // クリックされたボタンを取得
-    btn.disabled = true;
-    const originalText = btn.textContent; // 元のテキストを覚えておく
-    btn.textContent = "登録中...";
+    const btn = (evt && (evt.currentTarget ||evt.target))|| document.getElementById("emailSignUpBtn");; // クリックされたボタンを取得
+    if(btn) btn.disabled = true;
+    const originalText = btn ? btn.textContent : ""; // 元のテキストを覚えておく
+    if(btn)btn.textContent = "登録中...";
 
     const { data, error } = await sb.auth.signUp({
         email: email,
@@ -40,18 +40,18 @@ async function signUp(){
 
     if (error) {
     alert("登録エラー: " + error.message);
-    btn.disabled = false; // ボタン復活
-    btn.textContent = originalText;
+    if(btn) btn.disabled = false; // ボタン復活
+    if(btn) btn.textContent = originalText;
     } else {
     alert("登録成功！メールを確認してください");
     // 成功時、メール認証待ちになるので「確認待ち」の状態にする
-    btn.textContent = "メール確認待ち";
+    if(btn) btn.textContent = "メール確認待ち";
     }
 }
 
 
 // サインイン(ログイン)
-async function signIn(){
+async function signIn(evt){
     const email = prompt("メールアドレスを入力");
     const password = prompt("パスワードを入力");
 
@@ -61,10 +61,10 @@ async function signIn(){
     }
 
     // ボタンを無効化
-    const btn = event.target;
-    btn.disabled = true;
-    const originalText = btn.textContent;
-    btn.textContent = "ログイン中...";
+    const btn = (evt && (evt.currentTarget || evt.target)) || document.getElementById("emailLoginBtn");
+    if(btn) btn.disabled = true;
+    const originalText = btn ? btn.textContent : "";
+    if(btn) btn.textContent = "ログイン中...";
 
     const { data, error } = await sb.auth.signInWithPassword({
         email: email,
@@ -73,8 +73,8 @@ async function signIn(){
 
     if (error) {
         alert("ログインエラー: " + error.message);
-        btn.disabled = false;
-        btn.textContent = originalText;
+        if(btn) btn.disabled = false;
+        if(btn) btn.textContent = originalText;
     } else {
         alert("ログイン成功！ようこそ " + data.user.email);
         // document.getElementById("username").value = data.user.email; // HUDにコピー
@@ -83,8 +83,8 @@ async function signIn(){
         // startGPS();
 
         // ボタンの表示だけ元に戻しておく（ログイン完了を示すため）
-        btn.disabled = false;
-        btn.textContent = "ログイン済み";
+        if(btn) btn.disabled = false;
+        if(btn) btn.textContent = "ログイン済み";
     }
 }
 
@@ -233,7 +233,6 @@ window.addEventListener('load', async () => {
         await checkLogin();
         await updateLoginUI();
         await restoreName();
-        await loadRanking("daily"); // デイリーランキングを先に読み込む
 
         // 監視役👀
         sb.auth.onAuthStateChange((event, session) => {

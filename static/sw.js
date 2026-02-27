@@ -1,6 +1,8 @@
-const CACHE_NAME = "area-battle-v2"; // キャッシュ名
+const CACHE_NAME = "area-battle-v3"; // キャッシュ名
 const urlsToCache = [
   "/",
+  "/static/style.css",
++ "/static/privacy.html",
   "/static/icon.png",
   "/static/google.png",
   "/static/auth.js",
@@ -20,7 +22,7 @@ self.addEventListener("install", e => {
           // cache.add ではなく fetch を使うことで詳細な制御が可能
           const response = await fetch(url, { 
             cache: 'no-cache', // 最新の状態を取得
-            mode: url.includes('static') ? 'cors' : 'same-origin' 
+            mode: 'same-origin'
           });
           
           if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);

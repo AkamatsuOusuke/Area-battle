@@ -425,6 +425,8 @@ async function loadRanking(range = "all") {
     document.getElementById("ranking").innerHTML = text;
 
     if(myRank !== null && playedThisSession){
+        lastMyRank = myRank;
+        lastMyArea = myArea;
         document.getElementById("myRank").innerHTML = `あなたは${myRank}位です！<br>面積: ${myArea} m²`;
         document.getElementById("myRankBox").style.display = "block";
     } else {
