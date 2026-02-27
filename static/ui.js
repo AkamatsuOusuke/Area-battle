@@ -4,32 +4,6 @@ const SUPABASE_FUNCTION_URL = "https://jysjolovimtyvimkhfpd.supabase.co/function
 
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5c2pvbG92aW10eXZpbWtoZnBkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3MDA5MzQsImV4cCI6MjA4NjI3NjkzNH0.YDrF0H_mq99R5LIhcFVe4EAc-Z0ZwyB-WUH9XwdqDTo"
 
-// Edge Function 呼び出し用ヘッダーを安全に作る
-async function buildFunctionHeaders({ requireLogin = false } = {}) {
-  const headers = {
-    "Content-Type": "application/json",
-    "apikey": SUPABASE_KEY,
-  };
-
-  const { data: sessionData } = await sb.auth.getSession();
-  const token = sessionData?.session?.access_token;
-
-  if (token) {
-    // ログイン中は必ずJWTを使う（verify_jwt=trueでも通る）
-    headers["Authorization"] = `Bearer ${token}`;
-    return headers;
-  }
-
-  if (requireLogin) {
-    // JWT必須の呼び出しで未ログインなら null を返す
-    return null;
-  }
-
-  // 未ログインでも許可されてる Function の場合だけ anon を使う（verify_jwt=false 前提）
-  headers["Authorization"] = `Bearer ${SUPABASE_KEY}`;
-  return headers;
-}
-
 // タイトル画面
 async function startGame(){
 // 【追加】sbがまだ準備できていなければ、少し待つか警告を出す
@@ -48,17 +22,14 @@ if (!name) {
 }
 
 // ランキングデータを取得して、同じ名前がないか確認する。重複してる場合は警告を出す
-let users = [];
-{
-    const headers = await buildFunctionHeaders({ requireLogin: false });
-    const checkRes = await fetch(`${SUPABASE_FUNCTION_URL}/ranking-list`, { headers });
-    if(checkRes.ok){
-        users = await checkRes.json();
-    } else {
-        console.warn("name check skipped (ranking-list)", checkRes.status);
-        // 401 でもゲーム開始自体はできるようにする
-    }
-}
+const checkRes = await fetch(`${SUPABASE_FUNCTION_URL}/ranking-list`,{
+  headers: {
+    "apikey": SUPABASE_KEY,
+    "Authorization": "Bearer " + SUPABASE_KEY
+  }
+});
+
+const users = await checkRes.json();
 
 // ログインしてるか確認
 const { data } = await sb.auth.getUser();
@@ -406,25 +377,13 @@ async function loadRanking(range = "all") {
     if (range === "weekly") endpoint = "ranking-weekly"; // 週間ランキングのエンドポイントに切り替え
 
     // endpointにアクセスしてランキングデータを取得する。Supabase Edge Functionで処理する
-    // ✅ ランキング取得は「JWT必須」の可能性が高いのでログイン必須に寄せる
-    const headers = await buildFunctionHeaders({ requireLogin: true });
-    if (!headers) {
-        // 未ログインなら 401 を出さないように何もしない（表示だけ整える）
-        document.getElementById("ranking").innerHTML =
-            `<div style="opacity:0.7; text-align:center; padding:12px;">ランキング表示にはログインが必要です</div>`;
-        document.getElementById("myRankBox").style.display = "none";
-        return;
-    }
-
-    const res = await fetch(`${SUPABASE_FUNCTION_URL}/${endpoint}`, { headers });
-    if (!res.ok) {
-    const t = await res.text().catch(()=> "");
-    console.error("loadRanking failed:", res.status, t);
-    document.getElementById("ranking").innerHTML =
-        `<div style="opacity:0.7; text-align:center; padding:12px;">ランキング取得に失敗しました (${res.status})</div>`;
-    return;
-    }
-    const data = await res.json();
+    let res = await fetch(`${SUPABASE_FUNCTION_URL}/${endpoint}`,{
+        headers: {
+            "apikey": SUPABASE_KEY,
+            "Authorization": "Bearer " + SUPABASE_KEY
+        }
+    });
+    let data = await res.json();
 
     // 今の自分の名前を取得
     let myName;
