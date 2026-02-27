@@ -20,10 +20,10 @@ serve(async (req: Request) => {
   )
 
   const { data, error } = await supabase
-    .from("ranking")
-    .select("*")
+    .from("ranking_best")
+    .select("username, area")
     .order("area", { ascending: false })
-    .limit(50)
+    .limit(50);
 
   if (error) {
     return new Response(
