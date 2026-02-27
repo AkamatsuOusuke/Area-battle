@@ -23,6 +23,12 @@
   </head>
 
   <body>
+    <div id="splash">
+      <div class="splash-content">
+        <h1 class="splash-title">AREA BATTLE</h1>
+        <div class="splash-sub">Loading...</div>
+      </div>
+    </div>
     <!--タイトル画面-->
     <div id="titleScreen" class="title-screen">
 
@@ -159,6 +165,16 @@
                 .catch(err => console.log("SW error", err));
         });
     }
+    </script>
+
+    <script>
+    window.addEventListener("load", () => {
+      const splash = document.getElementById("splash");
+      setTimeout(() => {
+        splash.classList.add("splash-hide");
+        setTimeout(() => splash.remove(), 600);
+      }, 1000); // 1秒表示
+    });
     </script>
 
   </body>
