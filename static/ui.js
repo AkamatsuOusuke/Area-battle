@@ -371,10 +371,10 @@ watchId = navigator.geolocation.watchPosition(
 }
 
 // ランキング更新用
-async function loadRanking(range = "all") {
-    let endpoint = "ranking-list";
-    if (range === "daily") endpoint = "ranking-daily"; // 日間ランキングのエンドポイントに切り替え
+async function loadRanking(range = "daily") {
+    let endpoint = "ranking-daily"; // デフォルトは日間ランキングのエンドポイント
     if (range === "weekly") endpoint = "ranking-weekly"; // 週間ランキングのエンドポイントに切り替え
+     if (range === "all") endpoint = "ranking-list"; // 全期間ランキングのエンドポイントに切り替え（今回は同じエンドポイントで処理する想定）
 
     // endpointにアクセスしてランキングデータを取得する。Supabase Edge Functionで処理する
     let res = await fetch(`${SUPABASE_FUNCTION_URL}/${endpoint}`,{
@@ -484,18 +484,18 @@ window.addEventListener("load", () => {
 /*タブのクリックでランキングを切り替える処理*/
 let currentRange = "daily"; // デフォルトは日間ランキング
 
-function setActiveTab(range){
+function setActiveTab(range){// タブのアクティブ状態を切り替える
   document.querySelectorAll(".tab-btn").forEach(btn=>{
     btn.classList.toggle("is-active", btn.dataset.range === range);
   });
 }
 
-window.addEventListener("load", () => {
+window.addEventListener("load", () => {// タブボタンにクリックイベントを設定
   document.querySelectorAll(".tab-btn").forEach(btn=>{
     btn.addEventListener("click", async () => {
       currentRange = btn.dataset.range;
       setActiveTab(currentRange);
-      await loadRanking(currentRange);
+      await loadRanking(currentRange);// タブ切り替えのたびにランキングを更新
     });
   });
   loadRanking(currentRange);
