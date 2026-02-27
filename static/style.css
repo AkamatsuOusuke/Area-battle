@@ -454,7 +454,7 @@ color: #22d3ee;
   padding: 0;
   display: flex;
   justify-content: center;
-  overflow: hidden;           /* はみ出し対策 */
+  overflow: visible;           /* はみ出し対策 */
 }
 
 /* AdMaxが中で吐く要素を中央に固定 */
