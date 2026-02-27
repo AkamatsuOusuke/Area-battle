@@ -164,7 +164,7 @@ async function sendArea() {
         headers: { 
             "Content-Type": "application/json",
             "apikey": SUPABASE_KEY, // 公開用キーをヘッダーに含める
-            /*"Authorization": `Bearer ${SUPABASE_KEY}`*/,
+            /*"Authorization": `Bearer ${SUPABASE_KEY}`,*/
          },
         body: JSON.stringify({
             coords: sendPoints
