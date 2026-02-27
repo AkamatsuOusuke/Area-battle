@@ -428,3 +428,16 @@ color: #22d3ee;
   color:#020617;
   border:none;
 }
+
+/* AdMax wrapper（世界観を壊さない） */
+.ad-area{
+  margin: 14px 0 8px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+.ad-area > *{
+  max-width: 320px;   /* 300x250想定で安全 */
+  width: 100%;
+}
