@@ -448,13 +448,31 @@ color: #22d3ee;
 
 /* AdMax wrapper（世界観を壊さない） */
 .ad-area{
-  margin: 14px 0 8px;
-  text-align: center;
+  width: 100%;
+  max-width: 100%;
+  margin: 16px auto;
+  padding: 0;
   display: flex;
   justify-content: center;
+  overflow: hidden;           /* はみ出し対策 */
 }
 
-.ad-area > *{
-  max-width: 320px;   /* 300x250想定で安全 */
-  width: 100%;
+/* AdMaxが中で吐く要素を中央に固定 */
+.ad-area iframe,
+.ad-area ins,
+.ad-area > div{
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: 100% !important;
+}
+
+/* 300x250枠がはみ出す端末向け */
+@media (max-width: 340px){
+  .ad-area iframe,
+  .ad-area ins,
+  .ad-area > div{
+    transform: scale(0.92);
+    transform-origin: top center;
+  }
 }
