@@ -454,8 +454,8 @@ color: #22d3ee;
   padding: 0;
   display: flex;
   justify-content: center;
-  overflow: visible;           /* はみ出し対策 */
-}
+  overflow: visible;  
+}  
 
 /* AdMaxが中で吐く要素を中央に固定 */
 .ad-area iframe,
@@ -475,10 +475,4 @@ color: #22d3ee;
     transform: scale(0.92);
     transform-origin: top center;
   }
-}
-
-#titleAd{
-  width:100%;
-  text-align:center;
-  margin:20px 0;
 }
