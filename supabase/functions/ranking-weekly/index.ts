@@ -39,12 +39,7 @@ serve(async (req) => {
 
   const fromIso = startOfWeekJstIso();
 
-  const { data, error } = await supabase
-    .from("ranking")
-    .select("username, area")
-    .gte("created_at", fromIso)
-    .order("area", { ascending: false })
-    .limit(50);
+  const { data, error } = await supabase.rpc("get_ranking_weekly");
 
   if (error) {
     return new Response(JSON.stringify({ error: error.message }), {

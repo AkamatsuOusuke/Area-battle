@@ -13,9 +13,6 @@ function corsHeaders(origin: string | null) {
 function startOfDayJstIso(): string {
   const now = new Date();
   const jst = new Date(now.getTime() + 9 * 3600 * 1000);
-  const day = jst.getDay();
-  const diffFromMon = (day + 6) % 7;
-  jst.setDate(jst.getDate() - diffFromMon);
   jst.setHours(0, 0, 0, 0);
   const startUtc = new Date(jst.getTime() - 9 * 3600 * 1000);
   return startUtc.toISOString();
@@ -39,12 +36,7 @@ serve(async (req) => {
 
   const fromIso = startOfDayJstIso();
 
-  const { data, error } = await supabase
-    .from("ranking")
-    .select("username, area")
-    .gte("created_at", fromIso)
-    .order("area", { ascending: false })
-    .limit(50);
+  const { data, error } = await supabase.rpc("get_ranking_daily");
 
   if (error) {
     return new Response(JSON.stringify({ error: error.message }), {

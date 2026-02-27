@@ -233,7 +233,7 @@ window.addEventListener('load', async () => {
         await checkLogin();
         await updateLoginUI();
         await restoreName();
-        await loadRanking();
+        await loadRanking("daily"); // デイリーランキングを先に読み込む
 
         // 監視役👀
         sb.auth.onAuthStateChange((event, session) => {
