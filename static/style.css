@@ -476,3 +476,9 @@ color: #22d3ee;
     transform-origin: top center;
   }
 }
+
+#titleAd{
+  width:100%;
+  text-align:center;
+  margin:20px 0;
+}
