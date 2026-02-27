@@ -142,7 +142,7 @@ async function sendArea() {
         sendPoints.push(first); // 始点と終点が一致していなければ、ここで最初の点を最後に追加
     }
 
-    // 名前取得
+    // 名前取得(ランキング用)
     let name;
 
     const { data } = await sb.auth.getUser();
@@ -154,12 +154,7 @@ async function sendArea() {
         name = localStorage.getItem("guest_name") || "名無し";
     }
 
-    //　fetchで、サーバーにPOSTリクエストを送って面積を取得
-    const { data: userData } = await sb.auth.getUser();
-    const user = userData.user;
-
-    // Supabase Edge Functionにリクエストを送る。面積計算のみなので、座標のみ送信
-    let res = await fetch(`${SUPABASE_FUNCTION_URL}/area`, {
+    const res = await fetch(`${SUPABASE_FUNCTION_URL}/area`, {
         method: "POST",
         headers: { 
             "Content-Type": "application/json",
@@ -171,11 +166,29 @@ async function sendArea() {
         }), // 座標データ送信(JS → JSON → Python)
     });
 
-    //　面積データ受信(Python → JSON → JS)
-    let result = await res.json(); 
-    // ↑ result = { "area": 面積の数値 } という構造で受け取れる
+    if(!res.ok){
+        alert("面積計算に失敗しました。");
+        return;
+    }
+
+    const result = await res.json();
     document.getElementById("result").innerText = "面積: " + result.area;
 
+    // 結果を地図に表示するための多角形描画
+    if (polygonLayer) {
+        map.removeLayer(polygonLayer); //既存の多角形を削除
+    }
+    polygonLayer = L.polygon(
+        points.map((p) => [p[1], p[0]]),
+        {
+        color: "#adff2f", // 線の色
+        fillColor: "#adff2f", // 塗りつぶしの色（黄緑色）
+        fillOpacity: 0.3,
+        },
+    ).addTo(map);
+
+
+    // ここから「ログインしてたら保存」
     // ランキング登録の処理。面積計算が終わった後に行う
     const { data: sessionData } = await sb.auth.getSession();
     // アクセストークンを取得(ログインしてない場合はnull)
@@ -183,9 +196,10 @@ async function sendArea() {
 
     // ログインしてない場合はランキング登録できないようにする
     if (!accessToken) {
-        alert("ランキング登録はログインが必要です！");
+        console.log("guest: skip ranking insert");
+        playedThisSession = true; // 1回プレイ扱い
         return;
-    }
+    }    
 
     // Supabase Edge Functionにリクエストを送る。ランキングに結果を送信
     const insertRes = await fetch(`${SUPABASE_FUNCTION_URL}/ranking-insert`, {
@@ -205,25 +219,14 @@ async function sendArea() {
     console.log("insert status:", insertRes.status);
     console.log("insert body:", insertText);
 
-    if (polygonLayer) {
-        map.removeLayer(polygonLayer); //既存の多角形を削除
-    }
-    polygonLayer = L.polygon(
-        points.map((p) => [p[1], p[0]]),
-        {
-        color: "#adff2f", // 線の色
-        fillColor: "#adff2f", // 塗りつぶしの色（黄緑色）
-        fillOpacity: 0.3,
-        },
-    ).addTo(map);
-
+    
     if (!insertRes.ok) {
         alert("ランキング登録に失敗しました。");
         return;
     }
 
     playedThisSession = true;
-    await loadRanking(); // ランキング更新
+    await loadRanking(currentRange); // ランキング更新
 }
 
 // 地図リセット用
