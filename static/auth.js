@@ -240,7 +240,8 @@ async function restoreName(){
 
 // LINE内ブラウザかどうかを判定する関数
 function isLineInAppBrowser() {
-  return /Line/i.test(navigator.userAgent);
+  const ua = navigator.userAgent || "";
+  return /Line|LIFF/i.test(ua);
 }
 
 // LINE内ブラウザで開いている場合の案内を表示する関数
