@@ -238,6 +238,64 @@ async function restoreName(){
     }
 }
 
+// LINE内ブラウザかどうかを判定する関数
+function isLineInAppBrowser() {
+  return /Line/i.test(navigator.userAgent);
+}
+
+// LINE内ブラウザで開いている場合の案内を表示する関数
+function showOpenInBrowserGuide() {
+  // 二重挿入防止
+  if (document.getElementById("lineBrowserGuide")) return;
+
+  const guide = document.createElement("div");
+  guide.id = "lineBrowserGuide";
+  guide.style.margin = "14px 0";
+  guide.style.padding = "12px";
+  guide.style.borderRadius = "12px";
+  guide.style.background = "rgba(255,255,255,0.06)";
+  guide.style.lineHeight = "1.4";
+  guide.innerHTML = `
+    <div style="font-weight:700; margin-bottom:6px;">⚠ LINE内ブラウザで開いています</div>
+    <div style="font-size:13px; opacity:0.9; margin-bottom:10px;">
+      Googleログインがブロックされることがあります。<br>
+      <b>右上の「︙」→「Safari/Chromeで開く」</b>で開いてください。
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button id="openExternalBtn" class="btn title-btn" type="button">外部ブラウザで開く</button>
+      <button id="copyUrlBtn" class="btn title-btn" type="button">URLをコピー</button>
+    </div>
+  `;
+
+  // タイトル画面の下に追加
+  const target = document.querySelector("#titleScreen");
+  if (target) target.appendChild(guide);
+
+  // URLコピー
+  document.getElementById("copyUrlBtn").addEventListener("click", async () => {
+    const url = location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+      alert("URLをコピーしました。Safari/Chromeで貼り付けて開いてください！");
+    } catch {
+      // iOSでclipboardが失敗することがあるのでfallback
+      prompt("コピーできない場合は、下のURLを長押しでコピーしてください", url);
+    }
+  });
+
+  // 外部ブラウザを“試す”（成功する端末もある）
+  document.getElementById("openExternalBtn").addEventListener("click", () => {
+    const url = location.href;
+
+    // まず通常のwindow.open（LINEが許せば外部に飛ぶ）
+    const w = window.open(url, "_blank");
+    if (!w) {
+      // ブロックされたら案内
+      alert("外部ブラウザで開けませんでした。右上の「︙」→「Safari/Chromeで開く」を使ってください。");
+    }
+  });
+}
+
 // すべての初期化を一つの流れにまとめる
 window.addEventListener('load', async () => {
     try {
@@ -251,6 +309,11 @@ window.addEventListener('load', async () => {
         window.sb = supabaseLib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         sb = window.sb;
         console.log("✅ Supabase Ready!");
+
+        // LINE内ブラウザの案内
+        if (isLineInAppBrowser()) {
+            showOpenInBrowserGuide();
+        }
 
         await healBrokenSession();
         await checkLogin();
