@@ -90,7 +90,7 @@ async function signIn(evt){
 
 // Googleログイン
 async function loginWithGoogle() {
-  const { error } = await sb.auth.signInWithOAuth({
+  const { data, error } = await sb.auth.signInWithOAuth({
     provider: "google",
     options: {
         redirectTo: window.location.origin, // ログイン後にリダイレクトするURL（必要に応じて変更）
@@ -119,9 +119,9 @@ async function healBrokenSession(){
         return data.session;
     } catch(e){
         const msg = String(e?.message || e);
-        if(msg.includes("Invalid session")) {
+        if(msg.includes("Invalid session")||msg.includes("Invalid Refresh Token")||msg.includes("Refresh Token Not Found")){
             console.warn("セッションが壊れている可能性があります。セッションをクリアして再試行します...");
-            await sb.auth.signOut();
+            try{await sb.auth.signOut();} catch(e){console.warn("ログアウト中にエラーが発生しました:", e);}
             return null;
         }
         throw e;
