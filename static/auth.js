@@ -246,55 +246,88 @@ function isLineInAppBrowser() {
 
 // LINE内ブラウザで開いている場合の案内を表示する関数
 function showOpenInBrowserGuide() {
-  // 二重挿入防止
-  if (document.getElementById("lineBrowserGuide")) return;
+  if (document.getElementById("lineModal")) return;
 
-  const guide = document.createElement("div");
-  guide.id = "lineBrowserGuide";
-  guide.style.margin = "14px 0";
-  guide.style.padding = "12px";
-  guide.style.borderRadius = "12px";
-  guide.style.background = "rgba(255,255,255,0.06)";
-  guide.style.lineHeight = "1.4";
-  guide.innerHTML = `
-    <div style="font-weight:700; margin-bottom:6px;">⚠ LINE内ブラウザで開いています</div>
-    <div style="font-size:13px; opacity:0.9; margin-bottom:10px;">
-      Googleログインがブロックされることがあります。<br>
-      <b>右上の「︙」→「Safari/Chromeで開く」</b>で開いてください。
-    </div>
-    <div style="display:flex; gap:8px; flex-wrap:wrap;">
-      <button id="openExternalBtn" class="btn title-btn" type="button">外部ブラウザで開く</button>
-      <button id="copyUrlBtn" class="btn title-btn" type="button">URLをコピー</button>
+  const overlay = document.createElement("div");
+  overlay.id = "lineModal";
+  overlay.style.position = "fixed";
+  overlay.style.top = "0";
+  overlay.style.left = "0";
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.background = "rgba(0,0,0,0.85)";
+  overlay.style.display = "flex";
+  overlay.style.justifyContent = "center";
+  overlay.style.alignItems = "center";
+  overlay.style.zIndex = "999999";
+
+  overlay.innerHTML = `
+    <div style="
+      width: 90%;
+      max-width: 420px;
+      background: #0f172a;
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      color: white;
+      font-family: 'Orbitron', sans-serif;
+      box-shadow: 0 0 25px rgba(0,255,255,0.3);
+    ">
+      <div style="font-size:22px; margin-bottom:12px;">
+        ⚠ LINE内ブラウザです
+      </div>
+
+      <div style="font-size:14px; line-height:1.6; opacity:0.9; margin-bottom:18px;">
+        Googleログインは<br>
+        <b>LINE内では利用できません。</b><br><br>
+        右上の <b>「︙」→「Safari/Chromeで開く」</b><br>
+        を選んでください。
+      </div>
+
+      <button id="closeLineModal"
+        style="
+          width:100%;
+          padding:12px;
+          border:none;
+          border-radius:12px;
+          background:#00fff7;
+          color:black;
+          font-weight:bold;
+          margin-bottom:10px;
+        ">
+        閉じる
+      </button>
+
+      <button id="copyUrlBtn"
+        style="
+          width:100%;
+          padding:12px;
+          border:none;
+          border-radius:12px;
+          background:#1e293b;
+          color:white;
+        ">
+        URLをコピー
+      </button>
     </div>
   `;
 
-  // タイトル画面の下に追加
-  const target = document.querySelector("#titleScreen");
-  if (target) target.appendChild(guide);
+  document.body.appendChild(overlay);
+
+  // 閉じる
+  document.getElementById("closeLineModal").onclick = () => {
+    overlay.remove();
+  };
 
   // URLコピー
-  document.getElementById("copyUrlBtn").addEventListener("click", async () => {
-    const url = location.href;
+  document.getElementById("copyUrlBtn").onclick = async () => {
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(location.href);
       alert("URLをコピーしました。Safari/Chromeで貼り付けて開いてください！");
     } catch {
-      // iOSでclipboardが失敗することがあるのでfallback
-      prompt("コピーできない場合は、下のURLを長押しでコピーしてください", url);
+      prompt("コピーできない場合はこちらを長押しコピーしてください", location.href);
     }
-  });
-
-  // 外部ブラウザを“試す”（成功する端末もある）
-  document.getElementById("openExternalBtn").addEventListener("click", () => {
-    const url = location.href;
-
-    // まず通常のwindow.open（LINEが許せば外部に飛ぶ）
-    const w = window.open(url, "_blank");
-    if (!w) {
-      // ブロックされたら案内
-      alert("外部ブラウザで開けませんでした。右上の「︙」→「Safari/Chromeで開く」を使ってください。");
-    }
-  });
+  };
 }
 
 // すべての初期化を一つの流れにまとめる
