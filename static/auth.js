@@ -90,6 +90,13 @@ async function signIn(evt){
 
 // Googleログイン
 async function loginWithGoogle() {
+
+    // LINE内ブラウザの案内
+    if (isLineInAppBrowser()) {
+        showOpenInBrowserGuide();
+        return;
+    }
+    
   const { data, error } = await sb.auth.signInWithOAuth({
     provider: "google",
     options: {
@@ -343,11 +350,6 @@ window.addEventListener('load', async () => {
         window.sb = supabaseLib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         sb = window.sb;
         console.log("✅ Supabase Ready!");
-
-        // LINE内ブラウザの案内
-        if (isLineInAppBrowser()) {
-            showOpenInBrowserGuide();
-        }
 
         await healBrokenSession();
         await checkLogin();
