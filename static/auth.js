@@ -93,18 +93,40 @@ async function loginWithGoogle() {
   const { error } = await sb.auth.signInWithOAuth({
     provider: "google",
     options: {
-      // 省略OK（Supabase側のSite URLが正しければ戻ってくる）
-      // redirectTo: window.location.origin
+        redirectTo: window.location.origin, // ログイン後にリダイレクトするURL（必要に応じて変更）
+        skipBrowserRedirect: true // ブラウザのリダイレクトをスキップして、ポップアップでログインする場合はtrueにする
     }
   });
 
   if (error) {
     console.error("Google login error:", error);
     alert("Googleログインに失敗しました");
+    return;
+  }
+
+  if (data?.url) {
+    location.href = data.url; // ← LINE内でも成功率が上がる
   }
 }
 
 document.getElementById("googleLoginBtn").addEventListener("click", loginWithGoogle);
+
+
+async function healBrokenSession(){
+    try{
+        const { data, error } = await sb.auth.getSession();
+        if(error) throw error;
+        return data.session;
+    } catch(e){
+        const msg = String(e?.message || e);
+        if(msg.includes("Invalid session")) {
+            console.warn("セッションが壊れている可能性があります。セッションをクリアして再試行します...");
+            await sb.auth.signOut();
+            return null;
+        }
+        throw e;
+    }
+}
 
 
 // ページ読み込み時にログイン状態確認
@@ -230,6 +252,7 @@ window.addEventListener('load', async () => {
         sb = window.sb;
         console.log("✅ Supabase Ready!");
 
+        await healBrokenSession();
         await checkLogin();
         await updateLoginUI();
         await restoreName();
