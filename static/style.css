@@ -126,16 +126,16 @@ padding:10px;
     line-height: 1.1;
     transform: translateZ(0); /* サブピクセル対策 */
     font-size:48px;
-font-weight:700;
-letter-spacing:4px;
+    font-weight:700;
+    letter-spacing:4px;
 
-background: linear-gradient(90deg,#7c3aed,#2563eb,#06b6d4);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+    background: linear-gradient(90deg,#7c3aed,#2563eb,#06b6d4);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
 
-text-shadow:
-0 0 10px rgba(124,58,237,0.6),
-0 0 25px rgba(37,99,235,0.5);
+    text-shadow:
+    0 0 10px rgba(124,58,237,0.6),
+    0 0 25px rgba(37,99,235,0.5);
 }
 
 
