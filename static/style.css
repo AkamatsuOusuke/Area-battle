@@ -1,8 +1,13 @@
-body {
-margin: 0;
-font-family: "Orbitron", sans-serif;
-background: #020617;
-color: white;
+body{
+margin:0;
+font-family:"Orbitron",sans-serif;
+
+background:
+radial-gradient(circle at 20% 30%,#1e1b4b,transparent),
+radial-gradient(circle at 80% 70%,#0f172a,transparent),
+#020617;
+
+color:white;
 }
 
 /* ===== Splash Screen ===== */
@@ -111,16 +116,18 @@ padding:10px;
     font-weight:bold;
 }
 
-.neon-title {
-font-size: 42px;
-color: #22ee77;
-text-align: center;
-letter-spacing: 3px;
+.neon-title{
+font-size:48px;
+font-weight:700;
+letter-spacing:4px;
+
+background: linear-gradient(90deg,#7c3aed,#2563eb,#06b6d4);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
 
 text-shadow:
-    0 0 2px #22ee77,
-    0 0 4px #22ee77,
-    0 0 6px #00ffcc;
+0 0 10px rgba(124,58,237,0.6),
+0 0 25px rgba(37,99,235,0.5);
 }
 
 
@@ -249,17 +256,23 @@ text-align: center;
 }
 
 /* 全部のボタン共通 */
-.btn {
-    box-sizing: border-box;
-    padding: 16px;
-    font-size: 15px;
-    border: none;
-    border-radius: 14px;
-    background: linear-gradient(90deg, #0ea5e9, #22d3ee);
-    color: white;
-    font-weight: bold;
-    letter-spacing: 1px;
-    box-shadow: 0 0 12px rgba(34, 211, 238, 0.4);
+.btn{
+padding:16px;
+font-size:15px;
+border-radius:14px;
+
+background:linear-gradient(135deg,#1e293b,#0f172a);
+border:1px solid rgba(99,102,241,0.4);
+
+color:#e2e8f0;
+font-weight:bold;
+letter-spacing:1px;
+
+box-shadow:
+0 0 10px rgba(99,102,241,0.3),
+inset 0 0 10px rgba(0,0,0,0.6);
+
+transition:all .2s;
 }
 
 .btn:active {
@@ -275,26 +288,27 @@ text-align: center;
 
 /* ===== AREA SCAN 強化 ===== */
 .area-scan-btn{
-font-family: 'Exo 2', sans-serif;
-font-weight: 700;
-letter-spacing: 4px;
-font-size: 20px;
-background: linear-gradient(90deg, #00fff7, #22d3ee, #0ea5e9);
-color: #020617;
-font-weight: 900;
-letter-spacing: 3px;
-text-transform: uppercase;
+font-family:'Exo 2',sans-serif;
+font-size:20px;
+letter-spacing:4px;
+
+background:linear-gradient(90deg,#7c3aed,#2563eb);
+color:white;
+
+border:1px solid rgba(124,58,237,0.7);
+
 box-shadow:
-    0 0 8px #00fff7,
-    0 0 18px rgba(0,255,247,0.7);
-transition: all 0.25s ease;
+0 0 15px rgba(124,58,237,0.7),
+0 0 30px rgba(37,99,235,0.5);
+
+transition:all .25s;
 }
 
 .area-scan-btn:hover{
-transform: scale(1.03);
+transform:scale(1.05);
 box-shadow:
-    0 0 12px #00fff7,
-    0 0 25px rgba(0,255,247,0.9);
+0 0 20px rgba(124,58,237,0.9),
+0 0 40px rgba(37,99,235,0.7);
 }
 
 .area-scan-btn:active{
