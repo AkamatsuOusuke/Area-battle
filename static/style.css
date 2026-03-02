@@ -134,7 +134,7 @@ padding:10px;
 
 
     background: linear-gradient(90deg,#7c3aed,#2563eb,#06b6d4);
-    /*-webkit-background-clip:text;*/
+    -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
 
     text-shadow:
