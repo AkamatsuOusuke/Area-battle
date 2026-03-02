@@ -155,16 +155,6 @@ padding:10px;
 
 }
 
-.neon-title::after{
-    content:"";
-    display:block;
-    width:140px;
-    height:2px;
-    margin:10px auto 0;
-
-    background:linear-gradient(90deg,#6366f1,#22d3ee,#a855f7);
-    opacity:0.7;
-}
 
 .start-btn{ line-height:1.2; }
 .start-btn-sub{ font-size:0.7em; }
