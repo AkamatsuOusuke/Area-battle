@@ -427,7 +427,7 @@ async function loadRanking(range = "daily") {
     }
     document.getElementById("ranking").innerHTML = text;
 
-    if(myRank !== null && playedThisSession){
+    if(myRank !== null && playedThisSession && userData.user){// ランキングに載る条件：名前があって、今のセッションで遊んでいて、ログインしていること
         lastMyRank = myRank;
         lastMyArea = myArea;
         document.getElementById("myRank").innerHTML = `あなたは${myRank}位です！<br>面積: ${myArea} m²`;
