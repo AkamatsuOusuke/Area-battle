@@ -117,10 +117,17 @@ padding:10px;
 }
 
 .neon-title{
-font-size:48px;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+
+    /* スマホでのズレ防止 */
+    display: block;
+    line-height: 1.1;
+    transform: translateZ(0); /* サブピクセル対策 */
+    font-size:48px;
 font-weight:700;
 letter-spacing:4px;
-align-items: center;
 
 background: linear-gradient(90deg,#7c3aed,#2563eb,#06b6d4);
 -webkit-background-clip:text;
