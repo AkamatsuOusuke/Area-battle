@@ -117,6 +117,8 @@ padding:10px;
 }
 
 .neon-title{
+    font-family:'Audiowide', sans-serif;
+
     width: 100%;
     margin: 0 auto;
     text-align: center;
@@ -128,16 +130,41 @@ padding:10px;
     font-size:48px;
     font-weight:700;
     letter-spacing:4px;
+    text-align:center;
+
 
     background: linear-gradient(90deg,#7c3aed,#2563eb,#06b6d4);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
 
     text-shadow:
-    0 0 10px rgba(124,58,237,0.6),
-    0 0 25px rgba(37,99,235,0.5);
+    0 0 6px rgba(99,102,241,0.4),
+    0 0 14px rgba(34,211,238,0.3);
 }
 
+@media (max-width:480px){
+
+    .neon-title{
+    font-size:38px;
+    letter-spacing:2px;
+
+    text-shadow:
+    0 0 4px rgba(99,102,241,0.35),
+    0 0 10px rgba(34,211,238,0.25);
+    }
+
+}
+
+.neon-title::after{
+    content:"";
+    display:block;
+    width:140px;
+    height:2px;
+    margin:10px auto 0;
+
+    background:linear-gradient(90deg,#6366f1,#22d3ee,#a855f7);
+    opacity:0.7;
+}
 
 .start-btn{ line-height:1.2; }
 .start-btn-sub{ font-size:0.7em; }
