@@ -120,6 +120,7 @@ padding:10px;
 font-size:48px;
 font-weight:700;
 letter-spacing:4px;
+align-items: center;
 
 background: linear-gradient(90deg,#7c3aed,#2563eb,#06b6d4);
 -webkit-background-clip:text;
