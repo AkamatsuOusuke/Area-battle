@@ -116,29 +116,8 @@ font-size: 42px;
 color: #22ee77;
 text-align: center;
 letter-spacing: 3px;
-
-text-shadow:
-    0 0 2px #22ee77,
-    0 0 4px #22ee77,
-    0 0 6px #00ffcc;
-
-animation: neonGlow 3.5s ease-in-out infinite alternate;
 }
 
-@keyframes neonGlow {
-from {
-    text-shadow:
-    0 0 2px #22ee77,
-    0 0 4px #22ee77,
-    0 0 6px #00ffcc;
-}
-to {
-    text-shadow:
-    0 0 4px #22ee77,
-    0 0 8px #22ee77,
-    0 0 12px #00ffcc;
-}
-}
 
 .start-btn{ line-height:1.2; }
 .start-btn-sub{ font-size:0.7em; }
