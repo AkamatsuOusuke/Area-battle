@@ -305,7 +305,7 @@ transition:all .2s;
 }
 
 .btn:disabled {
-    background: #555 !important; /* グレーにする */
+    background: #1e293b !important; /* 薄いグレーに */
     cursor: not-allowed;         /* カーソルを禁止マークにする */
     box-shadow: none !important; /* 光るエフェクトを消す */
     transform: none !important;  /* 押した時の凹みをなくす */
