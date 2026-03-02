@@ -54,6 +54,13 @@ self.addEventListener("activate", e => {
 
 // フェッチ時はキャッシュ優先(オフラインでもキャッシュから返す)
 self.addEventListener("fetch", e => {
+  const url = new URL(e.request.url);
+
+  // ✅ プライバシーポリシーはSWが介入しない（リダイレクト絡みで死ぬのを防ぐ）
+  if (url.pathname === "/static/privacy.html") {
+    e.respondWith(fetch(e.request));
+    return;
+  }
   e.respondWith(
     caches.match(e.request).then(response => response || fetch(e.request))
   );
