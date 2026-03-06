@@ -6,7 +6,8 @@
 
     <meta name="theme-color" content="#00fff7"><!--スプラッシュ-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><!-- スマホ対応 -->
-    <title>AREA-BATTLE</title>
+
+    <title>AREA-BATTLE - GPSで面積を競う位置情報ゲーム</title>
     <script  src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> <!--supabaseクライアントをセットアップ。defer:JSはHTML読み終わってから実行してね-->
     <script  src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
@@ -23,9 +24,24 @@
 
     <meta name="google-site-verification" content="LDk6OGqHFgSuMU6_h-LHkp2EMZxsAwdC8p2DYz7AUWA" />
 
+    <meta property="og:title" content="AREA BATTLE - GPSで面積を競う位置情報ゲーム">
+    <meta property="og:description" content="GPSで移動してエリアを作り、面積を競うリアルワールド対戦ゲーム。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://area-battle.pages.dev/">
+    <meta property="og:image" content="https://area-battle.pages.dev/static/icon.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AREA BATTLE - GPSで面積を競う位置情報ゲーム">
+    <meta name="twitter:description" content="GPSで移動してエリアを作り、面積を競うリアルワールド対戦ゲーム。">
+    <meta name="twitter:image" content="https://area-battle.pages.dev/static/icon.png">
+
   </head>
 
   <body>
+    <noscript>
+      AREA BATTLEは、GPS位置情報を使って移動範囲の面積を競う位置情報ゲームです。
+      プレイヤーは実際に移動してエリアを形成し、ランキング形式で競います。
+    </noscript>
     <div id="splash">
       <div class="splash-content">
         <h1 class="splash-title">AREA BATTLE</h1>
